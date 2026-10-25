@@ -1,0 +1,103 @@
+/* Pilgrim Form Helper – devotional design system
+   Sandalwood background, kumkum maroon, saffron and temple gold. */
+:root{
+  --bg:#fbf3e4; --bg2:#f4e3c4; --card:#fffaf1; --card2:#fff4e0;
+  --fg:#3b1f0e; --mut:#7a5c45; --line:#ebd6ae;
+  --maroon:#7d1414; --maroon2:#4f0b0b; --saffron:#e8740c; --gold:#b8862b; --gold2:#e9c46a;
+  --ok:#2e7d32; --bad:#b3261e; --warn:#9a5b00; --focus:#e8740c;
+  --shadow:0 8px 22px rgba(125,20,20,.10), 0 1px 0 rgba(255,255,255,.6) inset;
+  --serif:"Noto Serif","Nirmala UI","Noto Serif Telugu","Noto Serif Devanagari",Georgia,"Times New Roman",serif;
+  --sans:"Segoe UI","Nirmala UI",system-ui,-apple-system,Roboto,"Noto Sans","Noto Sans Telugu","Noto Sans Devanagari",sans-serif;
+  --dots:rgba(184,134,43,.16);
+  color-scheme:light;
+}
+:root[data-theme=dark]{
+  --bg:#170c08; --bg2:#22110a; --card:#2a170f; --card2:#331d12;
+  --fg:#f8ead3; --mut:#cfae8c; --line:#4d2f1c;
+  --maroon:#e08a5a; --maroon2:#ffcf8a; --gold:#e9c46a; --gold2:#e9c46a;
+  --ok:#7bd88f; --bad:#ff8a80; --warn:#ffcc66; --focus:#ffb347;
+  --shadow:0 8px 24px rgba(0,0,0,.45); --dots:rgba(233,196,106,.08); color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#170c08; --bg2:#22110a; --card:#2a170f; --card2:#331d12;
+  --fg:#f8ead3; --mut:#cfae8c; --line:#4d2f1c;
+  --maroon:#e08a5a; --maroon2:#ffcf8a; --gold:#e9c46a; --gold2:#e9c46a;
+  --ok:#7bd88f; --bad:#ff8a80; --warn:#ffcc66; --focus:#ffb347;
+  --shadow:0 8px 24px rgba(0,0,0,.45); --dots:rgba(233,196,106,.08); color-scheme:dark}}
+
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--fg);font:14px/1.5 var(--sans);
+  background:
+    radial-gradient(circle at 1px 1px,var(--dots) 1.2px,transparent 1.6px) 0 0/22px 22px,
+    linear-gradient(180deg,var(--bg),var(--bg2)) fixed}
+a{color:var(--saffron);text-underline-offset:3px}
+h1,h2,h3{font-family:var(--serif);color:var(--maroon);font-weight:700;letter-spacing:.2px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.hidden{display:none!important}
+.mut{color:var(--mut)} .small{font-size:12px} .ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+
+/* ---------- temple header ---------- */
+.temple-bar{position:relative;display:flex;align-items:center;gap:10px;padding:10px 14px;color:#fff3d6;
+  background:
+    radial-gradient(120% 140% at 0% 0%,rgba(255,209,102,.25),transparent 50%),
+    linear-gradient(120deg,#4f0b0b 0%,#7d1414 45%,#b8430a 85%,#e8740c 100%);
+  border-bottom:2px solid #e9c46a;box-shadow:0 2px 0 #7d1414,0 6px 14px rgba(79,11,11,.25)}
+.temple-bar .brand{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.temple-bar .brand b{font-family:var(--serif);font-size:16px;letter-spacing:.3px;color:#fff6e0}
+.temple-bar .brand span{font-size:11.5px;color:#ffd98a;letter-spacing:.4px}
+.temple-bar .spacer{flex:1}
+.temple-bar .ibtn{all:unset;cursor:pointer;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;color:#ffe6b0;border:1px solid rgba(233,196,106,.45)}
+.temple-bar .ibtn:hover{background:rgba(255,230,176,.14)}
+.temple-bar .ibtn:focus-visible{outline:2px solid #ffd166;outline-offset:2px}
+/* mango-leaf & marigold toranam */
+.toranam{height:20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='20'%3E%3Cpath d='M0 2.5Q22 8 44 2.5' stroke='%23c9962c' stroke-width='1.8' fill='none'/%3E%3Cpath d='M11 4.5C7.2 9.5 8.6 15.5 11 19.5 13.4 15.5 14.8 9.5 11 4.5Z' fill='%232f7d32'/%3E%3Cpath d='M11 6v12' stroke='%2393d39a' stroke-width='.7'/%3E%3Ccircle cx='33' cy='8' r='4.6' fill='%23f59e0b'/%3E%3Ccircle cx='33' cy='8' r='2.2' fill='%23e8740c'/%3E%3Ccircle cx='33' cy='14.5' r='2.6' fill='%23fbbf24'/%3E%3C/svg%3E") repeat-x 0 0/44px 20px;
+  filter:drop-shadow(0 2px 1px rgba(79,11,11,.18))}
+
+/* ---------- cards & dividers ---------- */
+.card{position:relative;background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px;box-shadow:var(--shadow)}
+.card::before{content:"";position:absolute;left:14px;right:14px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,transparent,var(--gold2),transparent)}
+.card h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
+.divider{display:flex;align-items:center;gap:10px;color:var(--gold);margin:10px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold2),transparent)}
+
+/* ---------- buttons ---------- */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;color:var(--fg);transition:transform .08s ease,box-shadow .15s ease,border-color .15s}
+.btn:hover{border-color:var(--gold);box-shadow:0 2px 10px rgba(184,134,43,.25)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn-primary{color:#fff8e7;border:1px solid #f3c56b;
+  background:linear-gradient(135deg,#f08a24 0%,#d65a0c 45%,#8b1a1a 100%);
+  box-shadow:0 4px 14px rgba(184,67,10,.35),inset 0 1px 0 rgba(255,255,255,.3);text-shadow:0 1px 0 rgba(79,11,11,.4)}
+.btn-primary:hover{box-shadow:0 6px 20px rgba(232,116,12,.45),0 0 0 3px rgba(233,196,106,.35),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-gold{border-color:var(--gold);color:var(--maroon);background:linear-gradient(180deg,#fff8e1,#f7e2ad)}
+:root[data-theme=dark] .btn-gold{background:linear-gradient(180deg,#3a2414,#2c1a0e);color:var(--gold2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .btn-gold{background:linear-gradient(180deg,#3a2414,#2c1a0e);color:var(--gold2)}}
+.btn-danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,transparent)}
+.btn-ghost{background:transparent;border-color:transparent}
+.btn-sm{padding:4px 11px;font-size:12.5px}
+.btn-lg{padding:12px 18px;font-size:15.5px}
+
+/* ---------- form controls ---------- */
+input,select,textarea{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(233,196,106,.35);outline:none}
+input[type=checkbox],input[type=radio]{width:auto;accent-color:var(--saffron)}
+
+/* ---------- badges, chips ---------- */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:11.5px;border:1px solid var(--line);background:var(--card)}
+.badge.ok{border-color:color-mix(in srgb,var(--ok) 55%,transparent);color:var(--ok)}
+.badge.bad{border-color:color-mix(in srgb,var(--bad) 55%,transparent);color:var(--bad)}
+.badge.warn{border-color:color-mix(in srgb,var(--warn) 55%,transparent);color:var(--warn)}
+.badge.gold{border-color:var(--gold2);color:var(--gold);background:color-mix(in srgb,var(--gold2) 14%,var(--card))}
+.kbd{font:600 10.5px var(--sans);border:1px solid currentColor;border-radius:5px;padding:0 4px;opacity:.85}
+.avatar{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font:700 12.5px var(--serif);color:#7d1414;
+  background:radial-gradient(circle at 35% 30%,#fff7d6,#f3cf73 60%,#c9962c);border:1.5px solid #fff3cf;box-shadow:0 0 0 1px #c9962c}
+.avatar.senior{color:#fff;background:radial-gradient(circle at 35% 30%,#ffb26b,#d65a0c 60%,#8b1a1a);box-shadow:0 0 0 1px #8b1a1a}
+
+@media (prefers-reduced-motion:no-preference){
+  @keyframes flicker{0%,100%{transform:scale(1) translateY(0);opacity:1}50%{transform:scale(1.06,.94) translateY(.5px);opacity:.88}}
+  .flame{transform-origin:50% 70%;animation:flicker 2.4s ease-in-out infinite}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .35s ease both}
+}

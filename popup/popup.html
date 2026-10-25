@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Pilgrim Form Helper</title>
+<link rel="stylesheet" href="../lib/ui.css"><link rel="stylesheet" href="popup.css"></head>
+<body>
+<header class="temple-bar">
+  <span id="logo" class="logo"></span>
+  <div class="brand"><b>Pilgrim Form Helper</b><span lang="te">ఓం నమో వేంకటేశాయ</span></div>
+  <span class="spacer"></span>
+  <button type="button" class="ibtn" id="theme" title="Day / night" aria-label="Toggle day or night theme"></button>
+  <button type="button" class="ibtn" id="settings" title="People &amp; settings" aria-label="Open people and settings"></button>
+</header>
+<div class="toranam" aria-hidden="true"></div>
+
+<section id="lock" class="card hidden rise">
+  <div class="lockart" id="lockArt"></div>
+  <h3 style="justify-content:center">Your details are locked</h3>
+  <p class="mut center">Enter your 6-digit PIN to continue.</p>
+  <form id="unlockForm"><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="PIN"><button class="btn btn-primary" type="submit">Unlock</button></form>
+  <p id="pinErr" class="bad center" role="alert"></p>
+</section>
+
+<main id="main" class="hidden">
+  <section class="card status rise" id="pageCard" aria-live="polite">
+    <div class="status-icon" id="statusIcon"></div>
+    <div class="status-text">
+      <div id="pageLine" class="mut">Checking this page…</div>
+      <div id="healthLine" class="small mut"></div>
+    </div>
+  </section>
+
+  <section class="card rise" id="peopleCard">
+    <div class="rowx">
+      <h3 id="peopleTitle">Who is going?</h3>
+      <select id="profile" aria-label="Profile"></select>
+    </div>
+    <ul id="people" class="people" aria-label="People to fill. Drag to change the order."></ul>
+    <p id="limitNote" class="small mut"></p>
+    <div id="memberBox" class="hidden">
+      <label for="member" class="small mut">Group member to fill now</label>
+      <select id="member"></select>
+    </div>
+  </section>
+
+  <section class="card actions-card rise">
+    <button type="button" class="btn btn-primary btn-lg wide" id="btnFill"><span id="diyaIcon"></span>Fill details <span class="kbd">Alt+A</span></button>
+    <button type="button" class="btn btn-gold wide" id="btnFillC">Fill &amp; Continue <span class="kbd">Alt+S</span></button>
+    <div class="minor">
+      <button type="button" class="btn btn-sm btn-ghost" id="btnPractice" title="Fill and check everything without continuing">Practice run</button>
+      <span class="dot">•</span>
+      <button type="button" class="btn btn-sm btn-ghost" id="btnClear">Clear filled</button>
+    </div>
+    <div id="result" class="small result" aria-live="polite"></div>
+  </section>
+
+  <section class="card rise">
+    <div class="rowx"><h3>Ready for darshan?</h3><span id="readyBadge"></span></div>
+    <ul id="ready" class="small issues"></ul>
+  </section>
+
+  <section class="small info">
+    <div id="lastRun" class="mut"></div>
+    <div id="backupLine"></div>
+  </section>
+</main>
+
+<footer class="small">
+  <div class="divider" id="footLotus"></div>
+  <div class="mut">Govinda Govinda 🙏 · Fill-only, never pays · Not affiliated with TTD · <a href="#" id="help">Help</a></div>
+</footer>
+<script type="module" src="popup.js"></script>
+</body>
+</html>

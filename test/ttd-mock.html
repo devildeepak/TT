@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TTD MOCK – for testing Pilgrim Form Helper</title>
+<!--
+  Test page that behaves like a framework (React/Angular) form:
+  * Setting input.value directly is IGNORED and wiped on blur (reproduces "filled but not visible").
+  * Only real input events (via the native setter) update the form state.
+  * Passport popup, dependent Country → State dropdown with delay, validation messages,
+    CAPTCHA, Continue, and a Pay Now button on the payment page.
+  Open via file:// with "Allow access to file URLs" turned on for the DEV build.
+-->
+<style>
+  body{font-family:system-ui,sans-serif;margin:0;background:#f4f1ec}
+  header{background:#7a1f1f;color:#fff;padding:10px 16px} header a{color:#ffd;margin-right:12px}
+  main{max-width:980px;margin:16px auto;background:#fff;padding:16px;border-radius:8px}
+  .pilgrim-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;border:1px solid #ddd;padding:8px;margin:8px 0;border-radius:6px}
+  .form-group{display:flex;flex-direction:column;font-size:13px}
+  .form-group label{font-weight:600;margin-bottom:3px}
+  .invalid-feedback{color:#c00;font-size:11px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  [role=dialog]{position:fixed;inset:20% 30%;background:#fff;border:2px solid #333;padding:16px;z-index:10;display:none}
+  [role=dialog].open{display:block}
+  .accordion-item{border:1px solid #ccc;margin:8px 0;border-radius:6px}
+  .accordion-body{padding:8px} .accordion-item.collapsedItem .accordion-body{display:none}
+  button{padding:6px 14px}
+</style>
+</head>
+<body>
+<header><b>Tirumala (MOCK)</b> &nbsp;
+  <a href="#/special-entry">Special Entry Darshan</a><a href="#/srivani">Srivani</a><a href="#/senior">Senior Citizen</a>
+  <a href="#/srivari-seva">Srivari Seva</a><a href="#/group-seva">Group Seva</a></header>
+<main id="app"></main>
+<script>
+const state = {};
+const protoDesc = el => Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'value');
+/** Make an input/select behave like a React controlled component. */
+function controlled(el, key, onChange) {
+  const desc = protoDesc(el);
+  let tracked = desc.get.call(el);
+  Object.defineProperty(el, 'value', { configurable: true,
+    get() { return desc.get.call(this); },
+    set(v) { tracked = String(v); desc.set.call(this, v); } });   // React's instance tracker
+  const handler = () => {
+    const cur = desc.get.call(el);
+    if (cur === tracked) return;                                    // React ignores: no state update
+    tracked = cur; state[key] = cur; onChange && onChange(cur);
+  };
+  el.addEventListener('input', handler); el.addEventListener('change', handler);
+  el.addEventListener('blur', () => {                               // re-render from state
+    const v = state[key] ?? (el.tagName === 'SELECT' ? (el.options[0]?.value ?? '') : '');
+    desc.set.call(el, v); tracked = v;
+  });
+}
+const group = (label, inner, key) => `<div class="form-group"><label>${label}</label>${inner}<div class="invalid-feedback" data-err="${key}"></div></div>`;
+const inp = (key, type = 'text') => `<input data-key="${key}" type="${type}">`;
+const sel = (key, opts) => `<select data-key="${key}"><option value="">Select</option>${opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+function pilgrimRows(n, withUpload) {
+  let h = '';
+  for (let i = 0; i < n; i++) h += `<div class="pilgrim-row">
+    ${group('Name', inp(`p${i}.name`), `p${i}.name`)}
+    ${group('Age', inp(`p${i}.age`), `p${i}.age`)}
+    ${group('Gender', sel(`p${i}.gender`, ['Male', 'Female', 'Transgender']), `p${i}.gender`)}
+    ${group('Photo ID Proof', `<select data-key="p${i}.idType"><option value="Aadhaar Card">Aadhaar Card</option><option value="Passport">Passport</option></select>`, `p${i}.idType`)}
+    ${group('Photo ID Number', `<input data-key="p${i}.idNumber" maxlength="12">`, `p${i}.idNumber`)}
+    ${withUpload ? group('Upload Aadhaar', `<input type="file" data-file="p${i}.doc" accept="image/*,application/pdf">`, `p${i}.doc`) : ''}
+  </div>`;
+  return h;
+}
+const passportDialog = `<div role="dialog" id="ppd"><h3>Passport details</h3><div class="grid">
+  ${group('Country', sel('pp.country', ['United States', 'United Kingdom', 'Singapore']), 'pp.country')}
+  ${group('Visa/OCI Number', inp('pp.visaNo'), 'pp.visaNo')}
+  ${group('Type of Visa', sel('pp.visaType', ['Tourist', 'OCI', 'Business']), 'pp.visaType')}
+  ${group('Visa Validity', inp('pp.validity'), 'pp.validity')}
+  </div><br><button type="button" id="ppSave">Save</button></div>`;
+const contact = `<h3>General Details</h3><div class="grid">
+  ${group('Email', inp('c.email', 'email'), 'c.email')}
+  ${group('City', inp('c.city'), 'c.city')}
+  ${group('Country', sel('c.country', ['India', 'United States']), 'c.country')}
+  ${group('State', '<select data-key="c.state"><option value="">Select</option></select>', 'c.state')}
+  ${group('Pincode', inp('c.pincode'), 'c.pincode')}
+  </div>`;
+const captchaAndButtons = `<br>${group('Captcha', inp('captcha'), 'captcha')}<br><button type="button" id="continue" disabled>Continue</button>`;
+const SEVA_FIELDS = `<div class="grid">
+ ${group('ID Proof', sel('s.idType', ['Aadhaar Card', 'Passport']), 's.idType')}
+ ${group('ID Number', inp('s.idNumber'), 's.idNumber')}
+ ${group('Name', inp('s.name'), 's.name')}
+ ${group('Surname', inp('s.surname'), 's.surname')}
+ ${group('Father/Spouse Name', inp('s.fs'), 's.fs')}
+ ${group('Date of Birth', inp('s.dob'), 's.dob')}
+ ${group('Mobile', inp('s.mobile'), 's.mobile')}
+ ${group('Email', inp('s.email'), 's.email')}
+ ${group('Blood Group', sel('s.bg', ['A+', 'B+', 'O+', 'AB+']), 's.bg')}
+ ${group('Gender', sel('s.gender', ['Male', 'Female', 'Transgender']), 's.gender')}
+ <label><input type="checkbox" data-chk="s.mfit"> Mentally Fit</label>
+ <label><input type="checkbox" data-chk="s.pfit"> Physically Fit</label>
+ ${group('Street', inp('s.street'), 's.street')}
+ ${group('Door No', inp('s.door'), 's.door')}
+ ${group('Pincode', inp('s.pin'), 's.pin')}
+ ${group('Country', sel('s.country', ['India']), 's.country')}
+ ${group('State', sel('s.state', ['Andhra Pradesh', 'Karnataka', 'Telangana', 'Tamil Nadu']), 's.state')}
+ ${group('District', '<select data-key="s.district"><option value="">Select</option></select>', 's.district')}
+ ${group('City', inp('s.city'), 's.city')}
+ ${group('Nearest TTD Temple', sel('s.temple', ['Bengaluru', 'Hyderabad', 'Chennai']), 's.temple')}
+ ${group('Photo', '<input type="file" data-file="s.photo">', 's.photo')}
+ </div>`;
+const sevaExtra = () => `<h4>Experience</h4><div class="form-group"><label>Previously Volunteered</label>
+    <div><label><input type="radio" name="pv" value="Yes"> Yes</label> <label><input type="radio" name="pv" value="No"> No</label></div></div>
+    <div id="pvBox" style="display:none">${group('Number of times', inp('s.times'), 's.times')}</div>
+    <div class="form-group"><label>Languages Known</label><div>
+      ${['Telugu', 'Tamil', 'Kannada', 'Hindi', 'English'].map(l => `<label><input type="checkbox" value="${l}"> ${l}</label>`).join(' ')}</div></div>
+    ${group('Reference 1 Name', inp('s.r1'), 's.r1')}`;
+const pages = {
+  '#/special-entry': () => `<h2>Special Entry Darshan – Pilgrim Details</h2>${pilgrimRows(4)}${passportDialog}${contact}${captchaAndButtons}`,
+  '#/pilgrim-details': () => `<h2>Special Entry Darshan – Pilgrim Details</h2>${pilgrimRows(4)}${passportDialog}${contact}${captchaAndButtons}`,
+  '#/srivani': () => `<h2>Srivani Trust – Break Darshan Pilgrim Details</h2>${pilgrimRows(4)}${captchaAndButtons}`,
+  '#/senior': () => `<h2>Senior Citizen Darshan</h2>${pilgrimRows(2, true)}${contact}${captchaAndButtons}`,
+  '#/srivari-seva': () => `<h2>Srivari Seva – Volunteer Registration</h2>${SEVA_FIELDS}${sevaExtra()}`,
+  '#/group-seva': () => `<h2>Group Seva – Group Leader and Members</h2>${[0, 1, 2].map(i => `
+     <div class="accordion-item ${i ? 'collapsedItem' : ''}" data-member="${i}">
+       <button type="button" class="accordion-button ${i ? 'collapsed' : ''}">${i ? 'Member ' + (i + 1) : 'Group Leader'}</button>
+       <div class="accordion-body">${SEVA_FIELDS.replaceAll('data-key="s.', `data-key="g${i}.`).replaceAll('data-chk="s.', `data-chk="g${i}.`).replaceAll('data-file="s.', `data-file="g${i}.`)}</div></div>`).join('')}`,
+  '#/payment': () => `<h2>Payment Summary</h2><p>Amount ₹1200</p><button type="button" id="pay">Pay Now</button>`
+};
+function validate() {
+  document.querySelectorAll('[data-key$=".idNumber"]').forEach(el => {
+    const k = el.dataset.key, v = state[k] || '', err = document.querySelector(`[data-err="${k}"]`);
+    const isPass = state[k.split('.')[0] + '.idType'] === 'Passport';
+    err.textContent = v && !isPass && !/^\d{12}$/.test(v) ? 'Enter a valid 12 digit Aadhaar' : '';
+  });
+  const btn = document.getElementById('continue');
+  if (btn) {
+    const keys = [...document.querySelectorAll('main [data-key]')].filter(e => !e.closest('[role=dialog]')).map(e => e.dataset.key);
+    btn.disabled = !keys.every(k => state[k]) || [...document.querySelectorAll('.invalid-feedback')].some(e => e.textContent);
+  }
+}
+function render() {
+  for (const k of Object.keys(state)) delete state[k];
+  const h = location.hash || '#/special-entry';
+  document.getElementById('app').innerHTML = (pages[h] || pages['#/special-entry'])();
+  document.querySelectorAll('main [data-key]').forEach(el => {
+    const key = el.dataset.key;
+    if (el.tagName === 'SELECT' && el.options[0]?.value) state[key] = el.options[0].value;
+    controlled(el, key, v => {
+      if (key.endsWith('.idType') && v === 'Passport') document.getElementById('ppd')?.classList.add('open');
+      if (key === 'c.country') setTimeout(() => {      // dependent dropdown loads after 300 ms
+        const st = document.querySelector('[data-key="c.state"]');
+        st.innerHTML = '<option value="">Select</option>' + (v === 'India' ? ['Karnataka', 'Telangana', 'Andhra Pradesh', 'Tamil Nadu', 'Maharashtra'] : ['California', 'Texas']).map(s => `<option>${s}</option>`).join('');
+      }, 300);
+      if (/\.state$/.test(key) && key !== 'c.state') setTimeout(() => {
+        const d = document.querySelector(`[data-key="${key.replace('state', 'district')}"]`);
+        if (d) d.innerHTML = '<option value="">Select</option>' + ['Bengaluru Urban', 'Mysuru', 'Hyderabad', 'Chittoor'].map(s => `<option>${s}</option>`).join('');
+      }, 250);
+      validate();
+    });
+  });
+  document.getElementById('ppSave')?.addEventListener('click', () => document.getElementById('ppd').classList.remove('open'));
+  document.querySelectorAll('[name=pv]').forEach(r => r.addEventListener('change', () => { document.getElementById('pvBox').style.display = r.value === 'Yes' && r.checked ? 'block' : 'none'; }));
+  document.querySelectorAll('.accordion-button').forEach(b => b.addEventListener('click', () => { b.classList.toggle('collapsed'); b.parentElement.classList.toggle('collapsedItem'); }));
+  document.getElementById('continue')?.addEventListener('click', () => { window.__continued = (window.__continued || 0) + 1; location.hash = '#/payment'; });
+  document.getElementById('pay')?.addEventListener('click', () => { window.__paid = true; alert('PAY CLICKED – this must never happen from the extension'); });
+  validate();
+}
+window.__state = state;
+window.addEventListener('hashchange', render);
+render();
+</script>
+</body>
+</html>

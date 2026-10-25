@@ -1,0 +1,117 @@
+{
+  "version": "2026.10.25-2",
+  "minExtVersion": "1.0.0",
+  "_note": "Labels, URL fragments and button texts are PLACEHOLDERS. Capture the real values from live TTD pages (design doc Appendix D) and update this file. The engine tries each strategy in order.",
+  "forbiddenButtonText": ["pay", "pay now", "make payment", "proceed to payment", "confirm", "confirm & submit", "submit", "book now", "i agree"],
+  "allowedCloseButtonText": ["save", "ok", "done", "close", "add"],
+  "errorSelectors": [".invalid-feedback", ".mat-error", ".text-danger", ".error-message", "[role='alert']"],
+  "paymentMarkers": {
+    "url": ["payment", "pg-redirect", "checkout"],
+    "text": ["Payment Summary", "Select Payment", "Payment Gateway"],
+    "css": ["iframe[src*='razorpay']", "iframe[src*='payu']", "iframe[src*='billdesk']"]
+  },
+  "reviewMarkers": { "text": ["Seva Details", "Review Details", "Booking Summary"] },
+  "captcha": [{ "attr": { "name": "captcha" } }, { "placeholder": "captcha" }, { "label": "Captcha" }, { "css": "input[id*='captcha' i]" }],
+  "continue": [{ "buttonText": ["Continue", "Next"] }],
+  "rules": { "seniorMinAge": 65 },
+  "personFields": {
+    "name":     { "type": "text",   "source": "person.name",     "strategies": [{ "label": "Name" }, { "label": "Full Name" }, { "label": "Pilgrim Name" }, { "attr": { "name": "fname" } }, { "attrContains": { "name": "fname" } }, { "attr": { "name": "name" } }, { "attrContains": { "name": "name" } }, { "attr": { "name": "fullName" } }, { "attr": { "formcontrolname": "name" } }, { "attr": { "aria-label": "Name" } }, { "placeholder": "Name" }, { "placeholder": "Enter Name" }, { "placeholder": "Full Name" }] },
+    "age":      { "type": "text",   "source": "person.age",      "strategies": [{ "label": "Age" }, { "label": "Pilgrim Age" }, { "attr": { "name": "age" } }, { "attrContains": { "name": "age" } }, { "attr": { "formcontrolname": "age" } }, { "attr": { "aria-label": "Age" } }, { "placeholder": "Age" }, { "placeholder": "Enter Age" }] },
+    "gender":   { "type": "select", "source": "person.gender",   "strategies": [{ "label": "Gender" }, { "label": "Sex" }, { "attr": { "name": "gender" } }, { "attrContains": { "name": "gender" } }, { "attr": { "name": "sex" } }, { "attr": { "formcontrolname": "gender" } }, { "attr": { "aria-label": "Gender" } }],
+                  "valueMap": { "M": "Male", "F": "Female", "T": "Transgender" } },
+    "idType":   { "type": "select", "source": "person.idType",   "strategies": [{ "label": "Photo ID Proof" }, { "label": "Photo Id Proof" }, { "label": "ID Proof" }, { "label": "ID Type" }, { "label": "Identity Type" }, { "attr": { "name": "photoIdType" } }, { "attrContains": { "name": "photoidtype" } }, { "attr": { "name": "idType" } }, { "attrContains": { "name": "idtype" } }, { "attr": { "name": "idProof" } }, { "attr": { "name": "proofType" } }, { "attrContains": { "name": "proof" } }, { "attr": { "formcontrolname": "idProof" } }, { "attr": { "aria-label": "Photo ID Proof" } }],
+                  "valueMap": { "AADHAAR": "Aadhaar Card", "PASSPORT": "Passport" }, "skipIfEquals": "Aadhaar Card" },
+    "idNumber": { "type": "text",   "source": "person.idNumber", "strategies": [{ "label": "Photo Id Number" }, { "label": "Photo ID Number" }, { "label": "ID Number" }, { "label": "Aadhaar Number" }, { "label": "Identity Number" }, { "label": "Passport Number" }, { "attr": { "name": "idProofNumber" } }, { "attrContains": { "name": "idproofnumber" } }, { "attr": { "name": "idNumber" } }, { "attrContains": { "name": "idnumber" } }, { "attr": { "name": "aadharNumber" } }, { "attrContains": { "name": "aadhaar" } }, { "attr": { "name": "passportNumber" } }, { "attrContains": { "name": "passport" } }, { "attr": { "formcontrolname": "idNumber" } }, { "attr": { "aria-label": "Photo ID Number" } }, { "placeholder": "Enter ID Card Number" }], "compare": "alnum" }
+  },
+  "passportPopup": {
+    "container": [{ "css": "[role='dialog']" }, { "css": ".modal.show" }, { "css": ".cdk-overlay-pane" }],
+    "fields": {
+      "country":  { "type": "select", "source": "person.passport.country",  "strategies": [{ "label": "Country" }, { "label": "Passport Country" }] },
+      "visaNo":   { "type": "text",   "source": "person.passport.visaNo",   "strategies": [{ "attr": { "name": "visaNumber" } }, { "label": "Visa/OCI Number" }, { "label": "OCI Number" }, { "label": "Visa Number" }] },
+      "visaType": { "type": "select", "source": "person.passport.visaType", "strategies": [{ "attr": { "name": "visaType" } }, { "label": "Type of Visa" }] },
+      "validity": { "type": "date",   "source": "person.passport.validity", "strategies": [{ "attr": { "name": "visaValidityDate" } }, { "label": "Visa Validity" }, { "label": "Validity" }] }
+    }
+  },
+  "contactFields": {
+    "email":   { "type": "text",   "source": "contact.email",   "strategies": [{ "label": "Email" }, { "attr": { "type": "email" } }, { "attr": { "name": "email" } }, { "attrContains": { "name": "email" } }, { "attr": { "name": "emailId" } }, { "attr": { "name": "pilgrimEmail" } }, { "placeholder": "Enter your email id" }] },
+    "city":    { "type": "text",   "source": "contact.city",    "strategies": [{ "label": "City" }, { "attr": { "name": "city" } }, { "attrContains": { "name": "city" } }, { "attr": { "name": "address_city" } }, { "attr": { "name": "pilgrimCity" } }, { "placeholder": "Enter City" }] },
+    "state":   { "type": "customSelect", "source": "contact.state", "strategies": [{ "attr": { "name": "state" } }, { "attr": { "name": "address_state" } }, { "attr": { "name": "pilgrimState" } }, { "attrContains": { "name": "state" } }, { "label": "State" }], "optional": false, "stateAliases": true },
+    "country": { "type": "select", "source": "contact.country", "strategies": [{ "attr": { "name": "country" } }, { "attr": { "name": "address_country" } }, { "attr": { "name": "pilgrimCountry" } }, { "attrContains": { "name": "country" } }, { "label": "Country" }], "optional": true },
+    "pincode": { "type": "text",   "source": "contact.pincode", "strategies": [{ "attr": { "name": "pincode" } }, { "attr": { "name": "pinCode" } }, { "attr": { "name": "pilgrimPincode" } }, { "attrContains": { "name": "pincode" } }, { "attrContains": { "name": "pinCode" } }, { "label": "Pincode" }, { "label": "Pin Code" }, { "label": "Zip" }, { "placeholder": "Enter pincode" }] },
+    "gothram": { "type": "text",   "source": "contact.gothram", "strategies": [{ "attr": { "name": "gothram" } }, { "attrContains": { "name": "gothram" } }, { "attr": { "name": "gothra" } }, { "label": "Gothram" }], "optional": true }
+  },
+  "flows": {
+    "sed": {
+      "title": "Special Entry Darshan",
+      "detect": { "url": ["/pilgrim-details", "sed-booking", "special-entry", "specialentry"], "notUrl": ["spat", "arjitha"], "text": ["Special Entry Darshan", "Pilgrim Details"] },
+      "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "passport": true, "contact": ["email", "city", "country", "state", "pincode"],
+      "continue": { "allowed": true, "maxClicks": 1 }
+    },
+    "spat": {
+      "title": "SPAT Darshan",
+      "detect": { "url": ["/spat/pilgrim-details"], "text": ["SPAT Darshan", "Pilgrim Details"] },
+      "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "passport": true, "contact": ["email", "city", "country", "state", "pincode"],
+      "continue": { "allowed": true, "maxClicks": 1 }
+    },
+    "arjitha": {
+      "title": "Arjitha Seva / Homam",
+      "detect": { "url": ["arjitha", "seva-booking", "homam"], "text": ["Arjitha Seva", "Divyanugraha Homam"] },
+      "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "passport": true, "contact": ["email", "city", "country", "state", "pincode", "gothram"],
+      "continue": { "allowed": true, "maxClicks": 2 }
+    },
+    "srivani": {
+      "title": "Srivani Trust",
+      "detect": { "url": ["srivani"], "text": ["Srivani"] },
+      "kind": "rows", "maxPersons": 4, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "passport": false, "contact": [],
+      "continue": { "allowed": false }
+    },
+    "senior": {
+      "title": "Senior Citizen Darshan",
+      "detect": { "url": ["senior", "/pld"], "text": ["Senior Citizen"] },
+      "kind": "rows", "maxPersons": 2, "linkSpouse": true, "minAge": 65,
+      "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "rowUploads": [{ "key": "aadhaarDoc", "source": "person.doc.aadhaar", "strategies": [{ "label": "Upload Aadhaar" }, { "label": "Upload ID" }, { "css": "input[type='file']" }] }],
+      "passport": false, "contact": ["email", "city", "country", "state", "pincode"],
+      "continue": { "allowed": true, "maxClicks": 1 }
+    },
+    "differently_abled": {
+      "title": "Differently-abled Darshan",
+      "detect": { "url": ["differently", "disabled", "physically"], "text": ["Differently Abled", "Physically Challenged"] },
+      "kind": "rows", "maxPersons": 2,
+      "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "rowUploads": [
+        { "key": "certDoc", "source": "person.doc.cert", "strategies": [{ "label": "Certificate" }, { "label": "Disability" }] },
+        { "key": "aadhaarDoc", "source": "person.doc.aadhaar", "strategies": [{ "label": "Upload Aadhaar" }, { "label": "Upload ID" }], "optional": true }
+      ],
+      "passport": false, "contact": ["email", "city", "country", "state", "pincode"],
+      "continue": { "allowed": true, "maxClicks": 1 }
+    },
+    "angapradakshinam": {
+      "title": "Angapradakshinam",
+      "detect": { "url": ["angapradakshinam", "anga", "/agp"], "text": ["Angapradakshinam"] },
+      "kind": "rows", "maxPersons": 1,
+      "rowFields": ["name", "age", "gender", "idType", "idNumber"],
+      "passport": false, "contact": ["email", "city", "country", "state", "pincode"],
+      "continue": { "allowed": true, "maxClicks": 1 }
+    },
+    "srivari_seva": {
+      "title": "Srivari Seva (Individual)",
+      "detect": { "url": ["srivari-seva", "srivariseva", "volunteer"], "text": ["Srivari Seva"], "notText": ["Group Leader", "Member 2"] },
+      "kind": "schema", "schema": "seva", "sourceRoot": "seva",
+      "continue": { "allowed": false }
+    },
+    "group_seva": {
+      "title": "Srivari Seva (Group)",
+      "detect": { "url": ["group-seva", "groupseva"], "text": ["Group Seva", "Group Leader"] },
+      "kind": "group", "schema": "groupMember", "sourceRoot": "member", "maxMembers": 15,
+      "memberContainer": [{ "css": "[data-member]" }, { "css": ".accordion-item" }, { "css": "mat-expansion-panel" }],
+      "memberExpand": [{ "css": ".accordion-button.collapsed" }, { "css": "mat-expansion-panel-header[aria-expanded='false']" }],
+      "continue": { "allowed": false }
+    }
+  },
+  "schemaOverrides": {}
+}

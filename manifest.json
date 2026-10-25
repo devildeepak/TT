@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Pilgrim Form Helper for Tirumala",
+  "short_name": "Pilgrim Helper",
+  "description": "Free, private one-click filling for Tirumala darshan, Srivani and seva forms. Data stays on your device. Fill-only: never submits or pays.",
+  "version": "1.2.1",
+  "minimum_chrome_version": "110",
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": { "default_popup": "popup/popup.html", "default_title": "Pilgrim Form Helper" },
+  "options_page": "options/options.html",
+  "background": { "service_worker": "background/background.js", "type": "module" },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://ttdevasthanams.ap.gov.in/*",
+    "https://*.ttdevasthanams.ap.gov.in/*",
+    "https://tirupatibalaji.ap.gov.in/*",
+    "https://*.tirupatibalaji.ap.gov.in/*"
+  ],
+  "optional_host_permissions": [
+    "https://ttdsevaonline.com/*",
+    "https://*.ttdsevaonline.com/*"
+  ],
+  "content_scripts": [{
+    "matches": [
+      "https://ttdevasthanams.ap.gov.in/*",
+      "https://*.ttdevasthanams.ap.gov.in/*",
+      "https://tirupatibalaji.ap.gov.in/*",
+      "https://*.tirupatibalaji.ap.gov.in/*"
+    ],
+    "js": ["content/ttd.js"],
+    "run_at": "document_idle"
+  }],
+  "commands": {
+    "fill": { "suggested_key": { "default": "Alt+A", "mac": "Alt+A" }, "description": "Fill the form" },
+    "fill-continue": { "suggested_key": { "default": "Alt+S", "mac": "Alt+S" }, "description": "Fill and continue (stops before payment)" }
+  },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'self'" }
+}

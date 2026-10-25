@@ -1,0 +1,870 @@
+{
+ "format": "pilgrimhelper",
+ "v": 1,
+ "encrypted": false,
+ "data": {
+  "root": {
+   "schemaVersion": 1,
+   "profiles": [
+    {
+     "id": "8dd63cb9-5685-d624-04fc-d5555daf106d",
+     "name": "01 Family of 6 (SED)",
+     "persons": [
+      {
+       "id": "6513270e-269e-0d37-f2a7-4de452e6b438",
+       "name": "Test Ramesh Kumar",
+       "age": 45,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "218159083019",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "3d9c1724-11e2-0b8f-6b0d-549b6f03675a",
+       "name": "Test Lakshmi Kumar",
+       "age": 42,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "386091390995",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "3898d190-f9eb-dacc-0cb1-e29c658cda14",
+       "name": "Test Sai Kumar",
+       "age": 16,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "282462819485",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "1a61dbe2-2e44-158b-ae97-ba94d0eda82f",
+       "name": "Test Anu Kumar",
+       "age": 12,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "551819093782",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "7731af10-506b-f2ef-c6f8-77186d76b07e",
+       "name": "Test Gopal Kumar",
+       "age": 72,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "954323194870",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "72e6cc3a-babc-ed20-57ee-05cde00902c7",
+       "name": "Test Sita Kumar",
+       "age": 67,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "691186252762",
+       "tags": [],
+       "docs": {}
+      }
+     ],
+     "contact": {
+      "email": "test.01@example.com",
+      "mobile": "9875403552",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "560037"
+     },
+     "selection": [
+      "6513270e-269e-0d37-f2a7-4de452e6b438",
+      "3d9c1724-11e2-0b8f-6b0d-549b6f03675a",
+      "3898d190-f9eb-dacc-0cb1-e29c658cda14",
+      "1a61dbe2-2e44-158b-ae97-ba94d0eda82f",
+      "7731af10-506b-f2ef-c6f8-77186d76b07e",
+      "72e6cc3a-babc-ed20-57ee-05cde00902c7"
+     ]
+    },
+    {
+     "id": "626467ba-04a1-0547-b401-ba8570c1dca1",
+     "name": "02 Senior couple",
+     "persons": [
+      {
+       "id": "13deef86-ab10-31d0-f646-e1f40a097c97",
+       "name": "Test Venkata Rao",
+       "age": 71,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "755979711472",
+       "tags": [
+        "SENIOR"
+       ],
+       "docs": {
+        "aadhaar": "docid:testdoc-aadhaar"
+       },
+       "spouseId": "0f88080b-10a3-d6b2-aa05-e11ab2715945"
+      },
+      {
+       "id": "0f88080b-10a3-d6b2-aa05-e11ab2715945",
+       "name": "Test Kamala Rao",
+       "age": 66,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "697465075295",
+       "tags": [
+        "SENIOR"
+       ],
+       "docs": {
+        "aadhaar": "docid:testdoc-aadhaar"
+       },
+       "spouseId": "13deef86-ab10-31d0-f646-e1f40a097c97"
+      }
+     ],
+     "contact": {
+      "email": "test.02@example.com",
+      "mobile": "9592493986",
+      "city": "Tirupati",
+      "state": "Andhra Pradesh",
+      "country": "India",
+      "pincode": "517501"
+     },
+     "selection": [
+      "13deef86-ab10-31d0-f646-e1f40a097c97",
+      "0f88080b-10a3-d6b2-aa05-e11ab2715945"
+     ]
+    },
+    {
+     "id": "83239ef5-4ba2-e161-9fb9-af5084768b8c",
+     "name": "03 NRI family (passport)",
+     "persons": [
+      {
+       "id": "37dc76fb-0f17-a300-7e62-aa0a1df9fd78",
+       "name": "Test Arjun Reddy",
+       "age": 38,
+       "gender": "M",
+       "idType": "PASSPORT",
+       "idNumber": "N1234567",
+       "tags": [],
+       "docs": {},
+       "passport": {
+        "country": "United States",
+        "visaNo": "OCI1234567",
+        "visaType": "OCI",
+        "validity": "31/12/2030"
+       }
+      },
+      {
+       "id": "bd0561e6-211c-70cf-4995-2399c4aaeac1",
+       "name": "Test Priya Reddy",
+       "age": 35,
+       "gender": "F",
+       "idType": "PASSPORT",
+       "idNumber": "M7654321",
+       "tags": [],
+       "docs": {},
+       "passport": {
+        "country": "United States",
+        "visaNo": "OCI7654321",
+        "visaType": "OCI",
+        "validity": "31/12/2030"
+       }
+      },
+      {
+       "id": "eab477d2-6415-479c-65dc-9f503f63af83",
+       "name": "Test Riya Reddy",
+       "age": 8,
+       "gender": "F",
+       "idType": "PASSPORT",
+       "idNumber": "Z9988776",
+       "tags": [],
+       "docs": {},
+       "passport": {
+        "country": "United States",
+        "visaNo": "V12345678",
+        "visaType": "Tourist",
+        "validity": "15/06/2027"
+       }
+      }
+     ],
+     "contact": {
+      "email": "test.nri@example.com",
+      "mobile": "9455943145",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "country": "India",
+      "pincode": "500081"
+     },
+     "selection": [
+      "37dc76fb-0f17-a300-7e62-aa0a1df9fd78",
+      "bd0561e6-211c-70cf-4995-2399c4aaeac1",
+      "eab477d2-6415-479c-65dc-9f503f63af83"
+     ]
+    },
+    {
+     "id": "c9d22950-eb25-f8a1-fc2e-6a591ce3bc0c",
+     "name": "04 Mixed Aadhaar + passport",
+     "persons": [
+      {
+       "id": "2a96fb1a-14a0-f9e7-7f1b-103cdf1582b0",
+       "name": "Test Kiran Shetty",
+       "age": 41,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "968426846565",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "153e7c2a-26a2-c0bd-3b12-87fff52ddf5d",
+       "name": "Test Divya Shetty",
+       "age": 39,
+       "gender": "F",
+       "idType": "PASSPORT",
+       "idNumber": "K2345678",
+       "tags": [],
+       "docs": {},
+       "passport": {
+        "country": "Singapore",
+        "visaNo": "OCI2223334",
+        "visaType": "OCI",
+        "validity": "01/03/2029"
+       }
+      }
+     ],
+     "contact": {
+      "email": "test.04@example.com",
+      "mobile": "9169031717",
+      "city": "Mangaluru",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "575001"
+     },
+     "selection": [
+      "2a96fb1a-14a0-f9e7-7f1b-103cdf1582b0",
+      "153e7c2a-26a2-c0bd-3b12-87fff52ddf5d"
+     ]
+    },
+    {
+     "id": "15850a03-1ad2-d5f1-e05b-3e13f8c110fb",
+     "name": "05 Differently-abled + attendant",
+     "persons": [
+      {
+       "id": "a8948c89-3b61-8676-26bb-7dbd2d1c9af0",
+       "name": "Test Suresh Babu",
+       "age": 52,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "507924402689",
+       "tags": [
+        "DIFFERENTLY_ABLED"
+       ],
+       "docs": {
+        "cert": "docid:testdoc-cert",
+        "aadhaar": "docid:testdoc-aadhaar"
+       }
+      },
+      {
+       "id": "519088f5-90fb-bd11-9c1c-aaf75e8766ed",
+       "name": "Test Ravi Babu",
+       "age": 26,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "489078666619",
+       "tags": [],
+       "docs": {}
+      }
+     ],
+     "contact": {
+      "email": "test.05@example.com",
+      "mobile": "9345407830",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "pincode": "600028"
+     },
+     "selection": [
+      "a8948c89-3b61-8676-26bb-7dbd2d1c9af0",
+      "519088f5-90fb-bd11-9c1c-aaf75e8766ed"
+     ]
+    },
+    {
+     "id": "c76c603f-e7e8-f9f6-0a22-7385459c945c",
+     "name": "06 Single (Angapradakshinam)",
+     "persons": [
+      {
+       "id": "0fef7928-6683-6886-a260-cd0b7b45145c",
+       "name": "Test Mahesh Naidu",
+       "age": 29,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "513721590105",
+       "tags": [],
+       "docs": {}
+      }
+     ],
+     "contact": {
+      "email": "test.06@example.com",
+      "mobile": "9385147465",
+      "city": "Vijayawada",
+      "state": "Andhra Pradesh",
+      "country": "India",
+      "pincode": "520010"
+     },
+     "selection": [
+      "0fef7928-6683-6886-a260-cd0b7b45145c"
+     ]
+    },
+    {
+     "id": "d1dcec53-212a-8d9b-c17a-9262453bf491",
+     "name": "07 Srivani group of 4",
+     "persons": [
+      {
+       "id": "19f9919c-895f-d7b3-26b9-4c7f9118bb16",
+       "name": "Test Harish Iyer",
+       "age": 50,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "790139624599",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "1d87cec3-1f72-96ab-7961-fd925d39d0a8",
+       "name": "Test Meena Iyer",
+       "age": 47,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "977741215472",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "842e7fc2-2954-0a6e-b12a-a1f6d42fddbb",
+       "name": "Test Karthik Iyer",
+       "age": 21,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "238528084143",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "2ac34446-e883-a1d4-5de0-099784b5a818",
+       "name": "Test Divya Iyer",
+       "age": 19,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "738885393361",
+       "tags": [],
+       "docs": {}
+      }
+     ],
+     "contact": {
+      "email": "test.07@example.com",
+      "mobile": "9294939322",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "pincode": "600004",
+      "gothram": "Bharadwaja"
+     },
+     "selection": [
+      "19f9919c-895f-d7b3-26b9-4c7f9118bb16",
+      "1d87cec3-1f72-96ab-7961-fd925d39d0a8",
+      "842e7fc2-2954-0a6e-b12a-a1f6d42fddbb",
+      "2ac34446-e883-a1d4-5de0-099784b5a818"
+     ]
+    },
+    {
+     "id": "d1a89b37-ad0c-9bb6-e952-6a69d97e967b",
+     "name": "08 Friends 8 (over limit)",
+     "persons": [
+      {
+       "id": "332dd331-3a0b-9965-cda6-c6fdbd685167",
+       "name": "Test Friend Arun",
+       "age": 30,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "950047439570",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "fcf00fec-b91e-e9e5-efe0-9f07cefe2a1f",
+       "name": "Test Friend Bhavana",
+       "age": 28,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "751313735373",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "9c3a23cd-e67a-9b75-fc39-47249fc2d0a1",
+       "name": "Test Friend Chetan",
+       "age": 33,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "275116372651",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "f8be8831-f237-e45a-cd02-c5e116353d03",
+       "name": "Test Friend Deepa",
+       "age": 31,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "876122202977",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "9c9011ef-256b-adf9-a7e6-529bce76e9f4",
+       "name": "Test Friend Eshwar",
+       "age": 35,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "952882001827",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "31dec4f4-df2a-8b79-fc8e-80b36f0e2289",
+       "name": "Test Friend Farah",
+       "age": 27,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "504348395488",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "0f977044-218e-0b7b-d58d-cdb46b446806",
+       "name": "Test Friend Ganesh",
+       "age": 40,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "779868282888",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "c6c91b92-70ac-06ac-df70-301704c9d78d",
+       "name": "Test Friend Hema",
+       "age": 29,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "490222791805",
+       "tags": [],
+       "docs": {}
+      }
+     ],
+     "contact": {
+      "email": "test.08@example.com",
+      "mobile": "9553391968",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "country": "India",
+      "pincode": "411001"
+     },
+     "selection": [
+      "332dd331-3a0b-9965-cda6-c6fdbd685167",
+      "fcf00fec-b91e-e9e5-efe0-9f07cefe2a1f",
+      "9c3a23cd-e67a-9b75-fc39-47249fc2d0a1",
+      "f8be8831-f237-e45a-cd02-c5e116353d03",
+      "9c9011ef-256b-adf9-a7e6-529bce76e9f4",
+      "31dec4f4-df2a-8b79-fc8e-80b36f0e2289",
+      "0f977044-218e-0b7b-d58d-cdb46b446806",
+      "c6c91b92-70ac-06ac-df70-301704c9d78d"
+     ]
+    },
+    {
+     "id": "eb4ed2e3-895e-8b6b-263c-fa5e67ec326a",
+     "name": "09 Invalid data (edge cases)",
+     "persons": [
+      {
+       "id": "87ddaeb7-84b2-8054-aead-44b0537390e5",
+       "name": "Test Invalid Aadhaar",
+       "age": 30,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "123456789012",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "e4ddf9b9-c28e-e907-0722-35c28fcd7f40",
+       "name": "Test Short Id",
+       "age": 25,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "12345",
+       "tags": [],
+       "docs": {}
+      },
+      {
+       "id": "81fc069e-7a60-9683-ceaf-4915888564e8",
+       "name": "Test Expired Visa",
+       "age": 44,
+       "gender": "M",
+       "idType": "PASSPORT",
+       "idNumber": "P1112223",
+       "tags": [],
+       "docs": {},
+       "passport": {
+        "country": "United Kingdom",
+        "visaNo": "V998877",
+        "visaType": "Tourist",
+        "validity": "01/01/2024"
+       }
+      },
+      {
+       "id": "85f1115b-b2ff-f17b-3f66-5edef10637ce",
+       "name": "Test Young Senior",
+       "age": 58,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "683726167516",
+       "tags": [
+        "SENIOR"
+       ],
+       "docs": {
+        "aadhaar": "docid:testdoc-aadhaar"
+       }
+      }
+     ],
+     "contact": {
+      "email": "test.09@example.com",
+      "mobile": "9377679317",
+      "city": "Nellore",
+      "state": "Andhra Pradesh",
+      "country": "India",
+      "pincode": "524001"
+     },
+     "selection": [
+      "87ddaeb7-84b2-8054-aead-44b0537390e5",
+      "e4ddf9b9-c28e-e907-0722-35c28fcd7f40",
+      "81fc069e-7a60-9683-ceaf-4915888564e8",
+      "85f1115b-b2ff-f17b-3f66-5edef10637ce"
+     ]
+    },
+    {
+     "id": "53b97377-b34e-8ece-7e9e-e51d9212824c",
+     "name": "10 Senior couple with DOB",
+     "persons": [
+      {
+       "id": "12b80aed-6da7-9a87-3d9a-8079abd0d7fb",
+       "name": "Test Narayana Murthy",
+       "age": 78,
+       "gender": "M",
+       "idType": "AADHAAR",
+       "idNumber": "541252427316",
+       "tags": [
+        "SENIOR"
+       ],
+       "docs": {
+        "aadhaar": "docid:testdoc-aadhaar"
+       },
+       "dob": "12/05/1948",
+       "spouseId": "29acf1a5-7cbd-1f5a-e28a-f60465f42986"
+      },
+      {
+       "id": "29acf1a5-7cbd-1f5a-e28a-f60465f42986",
+       "name": "Test Saraswathi Murthy",
+       "age": 74,
+       "gender": "F",
+       "idType": "AADHAAR",
+       "idNumber": "526865635515",
+       "tags": [
+        "SENIOR"
+       ],
+       "docs": {
+        "aadhaar": "docid:testdoc-aadhaar"
+       },
+       "dob": "03/09/1952",
+       "spouseId": "12b80aed-6da7-9a87-3d9a-8079abd0d7fb"
+      }
+     ],
+     "contact": {
+      "email": "test.10@example.com",
+      "mobile": "9652743626",
+      "city": "Mysuru",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "570001",
+      "gothram": "Kashyapa"
+     },
+     "selection": [
+      "12b80aed-6da7-9a87-3d9a-8079abd0d7fb",
+      "29acf1a5-7cbd-1f5a-e28a-f60465f42986"
+     ]
+    }
+   ],
+   "activeProfileId": "8dd63cb9-5685-d624-04fc-d5555daf106d",
+   "seva": {
+    "identity": {
+     "idType": "Aadhaar Card",
+     "idNumber": "340261401412",
+     "name": "Srinivas",
+     "surname": "Test",
+     "fatherOrSpouse": "Test Test Sr",
+     "dob": "15/08/1985",
+     "mobile": "9876500001",
+     "email": "test.srinivas@example.com",
+     "bloodGroup": "B+",
+     "gender": "Male",
+     "mentallyFit": true,
+     "physicallyFit": true
+    },
+    "address": {
+     "street": "Test Street 9",
+     "doorNo": "136",
+     "pincode": "560001",
+     "country": "India",
+     "state": "Karnataka",
+     "district": "Bengaluru Urban",
+     "city": "Bengaluru",
+     "nearestTemple": "Bengaluru"
+    },
+    "photo": "docid:testdoc-photo",
+    "volunteer": {
+     "qualification": "B.E.",
+     "profession": "Software Engineer",
+     "employeeId": "TST001",
+     "designation": "Engineer",
+     "skill": "Crowd management",
+     "placeOfWork": "Bengaluru",
+     "eduDoc": "docid:testdoc-photo"
+    },
+    "personal": {
+     "fullNameAadhaar": "Test Srinivas",
+     "fatherOrHusband": "Test Venkatesh",
+     "maritalStatus": "Married",
+     "altMobile": "9876500002",
+     "residentialAddress": "12 Test Street, Bengaluru 560001"
+    },
+    "education": {
+     "category": "Graduate",
+     "qualification": "B.E.",
+     "university": "Test University",
+     "year": "2007",
+     "specialization": "Computer Science"
+    },
+    "profession": {
+     "status": "Employed",
+     "sector": "Private",
+     "category": "IT",
+     "role": "Engineer",
+     "years": "15"
+    },
+    "experience": {
+     "volunteeredBefore": "Yes",
+     "times": "2",
+     "lastPeriods": "Jan 2025, Jun 2025",
+     "otherOrg": "Test Seva Samithi",
+     "details": "Queue management",
+     "languages": [
+      "Telugu",
+      "Kannada",
+      "English"
+     ],
+     "ref1Name": "Test Ravi",
+     "ref1Mobile": "9876500003",
+     "ref2Name": "Test Uma",
+     "ref2Mobile": "9876500004"
+    }
+   },
+   "group": {
+    "members": [
+     {
+      "identity": {
+       "idType": "Aadhaar Card",
+       "idNumber": "370586492087",
+       "name": "Leader",
+       "surname": "Groupmember",
+       "fatherOrSpouse": "Test Groupmember Sr",
+       "dob": "01/01/1980",
+       "mobile": "9876510000",
+       "email": "test.leader@example.com",
+       "bloodGroup": "B+",
+       "gender": "Male",
+       "mentallyFit": true,
+       "physicallyFit": true
+      },
+      "address": {
+       "street": "Test Street 15",
+       "doorNo": "83",
+       "pincode": "560010",
+       "country": "India",
+       "state": "Karnataka",
+       "district": "Bengaluru Urban",
+       "city": "Bengaluru",
+       "nearestTemple": "Bengaluru"
+      },
+      "photo": "docid:testdoc-photo"
+     },
+     {
+      "identity": {
+       "idType": "Aadhaar Card",
+       "idNumber": "602344834788",
+       "name": "Anil",
+       "surname": "Groupmember",
+       "fatherOrSpouse": "Test Groupmember Sr",
+       "dob": "01/01/1981",
+       "mobile": "9876510001",
+       "email": "test.anil@example.com",
+       "bloodGroup": "B+",
+       "gender": "Male",
+       "mentallyFit": true,
+       "physicallyFit": true
+      },
+      "address": {
+       "street": "Test Street 35",
+       "doorNo": "178",
+       "pincode": "560011",
+       "country": "India",
+       "state": "Karnataka",
+       "district": "Bengaluru Urban",
+       "city": "Bengaluru",
+       "nearestTemple": "Bengaluru"
+      },
+      "photo": "docid:testdoc-photo"
+     },
+     {
+      "identity": {
+       "idType": "Aadhaar Card",
+       "idNumber": "240008838739",
+       "name": "Bindu",
+       "surname": "Groupmember",
+       "fatherOrSpouse": "Test Groupmember Sr",
+       "dob": "01/01/1982",
+       "mobile": "9876510002",
+       "email": "test.bindu@example.com",
+       "bloodGroup": "AB+",
+       "gender": "Female",
+       "mentallyFit": true,
+       "physicallyFit": true
+      },
+      "address": {
+       "street": "Test Street 14",
+       "doorNo": "222",
+       "pincode": "560012",
+       "country": "India",
+       "state": "Karnataka",
+       "district": "Bengaluru Urban",
+       "city": "Bengaluru",
+       "nearestTemple": "Bengaluru"
+      },
+      "photo": "docid:testdoc-photo"
+     },
+     {
+      "identity": {
+       "idType": "Aadhaar Card",
+       "idNumber": "986843353269",
+       "name": "Charan",
+       "surname": "Groupmember",
+       "fatherOrSpouse": "Test Groupmember Sr",
+       "dob": "01/01/1983",
+       "mobile": "9876510003",
+       "email": "test.charan@example.com",
+       "bloodGroup": "O+",
+       "gender": "Male",
+       "mentallyFit": true,
+       "physicallyFit": true
+      },
+      "address": {
+       "street": "Test Street 7",
+       "doorNo": "67",
+       "pincode": "560013",
+       "country": "India",
+       "state": "Karnataka",
+       "district": "Bengaluru Urban",
+       "city": "Bengaluru",
+       "nearestTemple": "Bengaluru"
+      },
+      "photo": "docid:testdoc-photo"
+     },
+     {
+      "identity": {
+       "idType": "Aadhaar Card",
+       "idNumber": "214620168492",
+       "name": "Durga",
+       "surname": "Groupmember",
+       "fatherOrSpouse": "Test Groupmember Sr",
+       "dob": "01/01/1984",
+       "mobile": "9876510004",
+       "email": "test.durga@example.com",
+       "bloodGroup": "B+",
+       "gender": "Female",
+       "mentallyFit": true,
+       "physicallyFit": true
+      },
+      "address": {
+       "street": "Test Street 89",
+       "doorNo": "151",
+       "pincode": "560014",
+       "country": "India",
+       "state": "Karnataka",
+       "district": "Bengaluru Urban",
+       "city": "Bengaluru",
+       "nearestTemple": "Bengaluru"
+      },
+      "photo": "docid:testdoc-photo"
+     },
+     {
+      "identity": {
+       "idType": "Aadhaar Card",
+       "idNumber": "272247045580",
+       "name": "Eswar",
+       "surname": "Groupmember",
+       "fatherOrSpouse": "Test Groupmember Sr",
+       "dob": "01/01/1985",
+       "mobile": "9876510005",
+       "email": "test.eswar@example.com",
+       "bloodGroup": "O+",
+       "gender": "Male",
+       "mentallyFit": true,
+       "physicallyFit": true
+      },
+      "address": {
+       "street": "Test Street 32",
+       "doorNo": "18",
+       "pincode": "560015",
+       "country": "India",
+       "state": "Karnataka",
+       "district": "Bengaluru Urban",
+       "city": "Bengaluru",
+       "nearestTemple": "Bengaluru"
+      },
+      "photo": "docid:testdoc-photo"
+     }
+    ],
+    "current": 0
+   },
+   "settings": {
+    "defaultAction": "FILL",
+    "theme": "system",
+    "floatingButton": true,
+    "autoAdvanceGroup": true,
+    "backupReminderDays": 14,
+    "labs": false,
+    "remoteConfigUrl": "",
+    "remotePublicKey": ""
+   },
+   "meta": {
+    "createdAt": "2026-10-24T00:00:00Z",
+    "updatedAt": "2026-10-24T00:00:00Z",
+    "lastBackupAt": null
+   }
+  },
+  "docs": {
+   "testdoc-aadhaar": "data:image/png;base64,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",
+   "testdoc-cert": "data:image/png;base64,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",
+   "testdoc-photo": "data:image/png;base64,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"
+  }
+ }
+}
