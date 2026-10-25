@@ -412,6 +412,8 @@
       const n = Math.min(rows.length, persons.length);
       records = (await Promise.all(Array.from({ length: n }, (_, i) => fillRow(flow, rows[i], persons[i], i)))).flat();
       for (const def of [...(flow.contactFields || [])].sort((a, b) => contactRank(a) - contactRank(b))) records.push(await fillOne(def, document, getPath({ contact: data.contact }, def.source), undefined, { wait: def.dependsOn ? 1500 : 0 }));
+      const cRecs = records.filter(r => r.row == null);
+      if (cRecs.length && cRecs.every(r => r.reason === "NOT_FOUND")) cRecs.forEach(r => { r.status = "SKIPPED"; }); // this step has no General Details section
       records.forEach(r => { if (r.row != null) r.person = persons[r.row]?.name; });
     } else {
       let scope = document;

@@ -115,6 +115,7 @@ const sevaExtra = () => `<h4>Experience</h4><div class="form-group"><label>Previ
     ${group('Reference 1 Name', inp('s.r1'), 's.r1')}`;
 const pages = {
   '#/special-entry': () => `<h2>Special Entry Darshan – Pilgrim Details</h2>${pilgrimRows(4)}${passportDialog}${contact}${captchaAndButtons}`,
+  '#/special-entry-nocontact': () => `<h2>Special Entry Darshan ? Pilgrim Details</h2>${pilgrimRows(4)}${passportDialog}${captchaAndButtons}`,
   '#/pilgrim-details': () => `<h2>Special Entry Darshan – Pilgrim Details</h2>${pilgrimRows(4)}${passportDialog}${contact}${captchaAndButtons}`,
   '#/srivani': () => `<h2>Srivani Trust – Break Darshan Pilgrim Details</h2>${pilgrimRows(4)}${captchaAndButtons}`,
   '#/senior': () => `<h2>Senior Citizen Darshan</h2>${pilgrimRows(2, true)}${contact}${captchaAndButtons}`,

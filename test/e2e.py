@@ -243,6 +243,10 @@ async def main():
         await use_profile(8); await go("#/srivani"); r = await fill(); s = await status()
         check("Sample 09 (invalid data) → readiness errors and ✖ fields", not r["report"]["ok"] and any(not i.get("warn") for i in s["readiness"]), s["readiness"])
 
+        # 15c. step without General Details: absent contact fields are skipped, not failed
+        await use_profile(0); await go("#/special-entry-nocontact"); r = await fill()
+        check("no contact section ? contact fields SKIPPED and fill ok", r["report"]["ok"] and all(f["status"] == "SKIPPED" for f in r["report"]["fields"] if f["key"].startswith("contact.")), [f for f in r["report"]["fields"] if f["status"] == "FAILED"])
+
         # 15a. strict mode (TTD ignores scripted input): guard, no false "Filled", Quick Paste with trusted keyboard
         await opt.evaluate("""async ([root]) => { await chrome.storage.local.set({ root, prefs: root.settings }); }""", [seed()])
         await go("?strict=1#/special-entry")
