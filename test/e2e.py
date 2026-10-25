@@ -243,6 +243,40 @@ async def main():
         await use_profile(8); await go("#/srivani"); r = await fill(); s = await status()
         check("Sample 09 (invalid data) → readiness errors and ✖ fields", not r["report"]["ok"] and any(not i.get("warn") for i in s["readiness"]), s["readiness"])
 
+        # 15a. strict mode (TTD ignores scripted input): guard, no false "Filled", Quick Paste with trusted keyboard
+        await opt.evaluate("""async ([root]) => { await chrome.storage.local.set({ root, prefs: root.settings }); }""", [seed()])
+        await go("?strict=1#/special-entry")
+        r = await fill("FILL"); rep = r["report"]
+        check("strict: scripted fill flags trustedGuard and never reports Filled", rep.get("trustedGuard") is True and rep["ok"] is False, rep)
+        r = await fill("FILL_CONTINUE")
+        check("strict: Fill & Continue is refused", r["report"].get("stoppedAt") == "TRUSTED_GUARD" and not await page.evaluate("window.__continued"), r["report"])
+        tabmsg = lambda m: opt.evaluate("""async (m) => { const [t] = await chrome.tabs.query({ url: "http://127.0.0.1/*" });
+              return await new Promise(r => chrome.tabs.sendMessage(t.id, m, r)); }""", m)
+        await page.bring_to_front()
+        await tabmsg({"t": "QP_START"})
+        P = seed()["profiles"][0]; people = P["persons"]; C = P["contact"]
+        want = {}
+        for i, pp in enumerate(people[:4]):
+            want.update({f"p{i}.name": pp["name"], f"p{i}.age": str(pp["age"]), f"p{i}.gender": {"M": "Male", "F": "Female", "T": "Transgender"}[pp["gender"]],
+                         f"p{i}.idNumber": pp["idNumber"], f"p{i}.idType": "Passport" if pp["idType"] == "PASSPORT" else "Aadhaar Card"})
+        want.update({"c.country": C["country"], "c.state": C["state"], "c.city": C["city"], "c.pincode": C["pincode"], "c.email": C["email"]})
+        order = []
+        for _ in range(40):
+            key = await page.evaluate("document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.key || '' : ''")
+            if key not in want or (order and order[-1] == key and (await st()).get(key) == want[key]):
+                await page.wait_for_timeout(450)
+                key2 = await page.evaluate("document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.key || '' : ''")
+                if key2 == key or key2 not in want: break
+                key = key2
+            if (await st()).get(key) != want[key]:
+                await page.keyboard.type(want[key])
+            order.append(key)
+            await page.wait_for_timeout(500)
+        S = await st()
+        check("quick paste: row fields entered by trusted typing", all(S.get(k) == v for k, v in want.items() if k.startswith("p") and not k.endswith("idType")), {k: S.get(k) for k in list(want)[:6]})
+        check("quick paste: contact entered in order Country then State then City", order.index("c.country") < order.index("c.state") < order.index("c.city") if all(k in order for k in ["c.country", "c.state", "c.city"]) else False, order)
+        check("quick paste: Continue never pressed", not await page.evaluate("window.__continued"))
+
         # 15b. selectors cover field names read from TTD's public JS
         cfg = open(os.path.join(ROOT, "config", "selectors.json"), encoding="utf8").read() if "ROOT" in globals() else open("config/selectors.json", encoding="utf8").read()
         check("selectors include live TTD names", all(k in cfg for k in ["fname","photoIdType","idProofNumber","emailId","visaNumber","visaValidityDate","Enter ID Card Number","/ssdpat/pilgrim-details","Tiruchanoor"]))

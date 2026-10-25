@@ -45,21 +45,21 @@
       "title": "Special Entry Darshan",
       "detect": { "url": ["/pilgrim-details", "sed-booking", "special-entry", "specialentry"], "notUrl": ["spat", "arjitha"], "text": ["Special Entry Darshan", "Pilgrim Details"] },
       "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
-      "passport": true, "contact": ["email", "city", "country", "state", "pincode"],
+      "passport": true, "contact": ["country", "state", "city", "pincode", "email"],
       "continue": { "allowed": true, "maxClicks": 1 }
     },
     "spat": {
       "title": "Special Entry Darshan (Ammavari Temple, Tiruchanoor)",
       "detect": { "url": ["/spat/pilgrim-details", "/ssdpat/pilgrim-details"], "text": ["SPAT Darshan", "Padmavathi Ammavari", "Tiruchanoor", "Pilgrim Details"] },
       "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
-      "passport": true, "contact": ["email", "city", "country", "state", "pincode"],
+      "passport": true, "contact": ["country", "state", "city", "pincode", "email"],
       "continue": { "allowed": true, "maxClicks": 1 }
     },
     "arjitha": {
       "title": "Arjitha Seva / Homam",
       "detect": { "url": ["arjitha", "seva-booking", "homam"], "text": ["Arjitha Seva", "Divyanugraha Homam"] },
       "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
-      "passport": true, "contact": ["email", "city", "country", "state", "pincode", "gothram"],
+      "passport": true, "contact": ["country", "state", "city", "pincode", "email", "gothram"],
       "continue": { "allowed": true, "maxClicks": 2 }
     },
     "srivani": {
@@ -75,7 +75,7 @@
       "kind": "rows", "maxPersons": 2, "linkSpouse": true, "minAge": 65,
       "rowFields": ["name", "age", "gender", "idType", "idNumber"],
       "rowUploads": [{ "key": "aadhaarDoc", "source": "person.doc.aadhaar", "strategies": [{ "label": "Upload Aadhaar" }, { "label": "Upload ID" }, { "css": "input[type='file']" }] }],
-      "passport": false, "contact": ["email", "city", "country", "state", "pincode"],
+      "passport": false, "contact": ["country", "state", "city", "pincode", "email"],
       "continue": { "allowed": true, "maxClicks": 1 }
     },
     "differently_abled": {
@@ -87,7 +87,7 @@
         { "key": "certDoc", "source": "person.doc.cert", "strategies": [{ "label": "Certificate" }, { "label": "Disability" }] },
         { "key": "aadhaarDoc", "source": "person.doc.aadhaar", "strategies": [{ "label": "Upload Aadhaar" }, { "label": "Upload ID" }], "optional": true }
       ],
-      "passport": false, "contact": ["email", "city", "country", "state", "pincode"],
+      "passport": false, "contact": ["country", "state", "city", "pincode", "email"],
       "continue": { "allowed": true, "maxClicks": 1 }
     },
     "angapradakshinam": {
@@ -95,7 +95,7 @@
       "detect": { "url": ["angapradakshinam", "anga", "/agp"], "text": ["Angapradakshinam"] },
       "kind": "rows", "maxPersons": 1,
       "rowFields": ["name", "age", "gender", "idType", "idNumber"],
-      "passport": false, "contact": ["email", "city", "country", "state", "pincode"],
+      "passport": false, "contact": ["country", "state", "city", "pincode", "email"],
       "continue": { "allowed": true, "maxClicks": 1 }
     },
     "srivari_seva": {

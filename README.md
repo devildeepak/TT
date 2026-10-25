@@ -58,3 +58,6 @@ Use these only on the mock page, never on the real TTD site.
 `node scripts/sign-config.mjs keygen` → host `selectors.json` + `.sig` + `status.json` on HTTPS →
 `PRIVATE_KEY=… node scripts/sign-config.mjs sign selectors.json` → paste the URL and public key in Settings → Field mappings.
 Unsigned or tampered files are ignored.
+
+### Quick Paste (when TTD rejects scripted input)
+TTD only accepts values you enter yourself. If Fill reports "TTD accepts only details you enter yourself", click **Start Quick Paste**. The panel walks field by field: press Ctrl+V (value is already copied), type the shown number (Age), or choose the shown dropdown value. It advances when the field matches, then verifies. Fill & Continue is disabled in this mode; press Continue yourself. Passport popups are filled by hand.

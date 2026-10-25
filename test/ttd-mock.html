@@ -33,6 +33,7 @@
   <a href="#/srivari-seva">Srivari Seva</a><a href="#/group-seva">Group Seva</a></header>
 <main id="app"></main>
 <script>
+const STRICT = /strict=1/.test(location.search);
 const state = {};
 const protoDesc = el => Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'value');
 /** Make an input/select behave like a React controlled component. */
@@ -42,7 +43,8 @@ function controlled(el, key, onChange) {
   Object.defineProperty(el, 'value', { configurable: true,
     get() { return desc.get.call(this); },
     set(v) { tracked = String(v); desc.set.call(this, v); } });   // React's instance tracker
-  const handler = () => {
+  const handler = ev => {
+    if (STRICT && ev && !ev.isTrusted) { desc.set.call(el, state[key] ?? ''); tracked = desc.get.call(el); return; }   // TTD ignores scripted input
     const cur = desc.get.call(el);
     if (cur === tracked) return;                                    // React ignores: no state update
     tracked = cur; state[key] = cur; onChange && onChange(cur);

@@ -12,7 +12,7 @@
   const INPUT_SEL = "input:not([type=hidden]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image]), select, textarea, [role=combobox], [contenteditable=true]";
   const BUTTON_SEL = "button, input[type=submit], input[type=button], a[role=button], [role=button]";
 
-  let cfg = null, prefs = {}, lastDetect = { flow: "unknown" }, lastRecords = [], busy = false, destroyed = false;
+  let cfg = null, prefs = {}, lastDetect = { flow: "unknown" }, lastRecords = [], busy = false, destroyed = false, trustedGuard = false, forceManual = false, lastReport = null;
   const timers = [], observers = [];
 
   /* ================= utilities ================= */
@@ -323,6 +323,7 @@
     if (!r) { rec.status = def.optional ? "SKIPPED" : "FAILED"; rec.reason = "NOT_FOUND"; return rec; }
     rec.el = r.el; rec.strategy = r.idx;
     if (r.el.disabled || (r.el.readOnly && def.type !== "select")) { rec.status = "FAILED"; rec.reason = "DISABLED"; return rec; }
+    if (forceManual && def.type !== "file") { rec.status = "FAILED"; rec.reason = "NOT_ACCEPTED"; return rec; }
     let res;
     try { res = await applyField(def, r.el, value, extra.fileBase); } catch (e) { res = { ok: false, reason: "ERROR" }; console.warn("[PilgrimHelper]", def.key, e); }
     if (res.el) rec.el = res.el;
@@ -402,6 +403,7 @@
     if (det.step === "payment") return { flow: flowId, mode, ok: false, error: "E_PAYMENT", fields: [] };
     let records = [];
     const notes = [];
+    try { forceManual = flow.kind === "rows" && sessionStorage.getItem("ph:qp:" + flowId) === "1"; } catch { forceManual = false; }
     if (flow.kind === "rows") {
       const rows = getRows(flow), persons = data.persons || [];
       if (!rows.length) return { flow: flowId, mode, ok: false, error: "E_NO_ROWS", fields: [] };
@@ -409,7 +411,7 @@
       if (persons.length < rows.length) notes.push(`${rows.length - persons.length} empty row(s) on the page. TTD may need every row filled.`);
       const n = Math.min(rows.length, persons.length);
       records = (await Promise.all(Array.from({ length: n }, (_, i) => fillRow(flow, rows[i], persons[i], i)))).flat();
-      for (const def of flow.contactFields || []) records.push(await fillOne(def, document, getPath({ contact: data.contact }, def.source), undefined, { wait: def.dependsOn ? 1500 : 0 }));
+      for (const def of [...(flow.contactFields || [])].sort((a, b) => contactRank(a) - contactRank(b))) records.push(await fillOne(def, document, getPath({ contact: data.contact }, def.source), undefined, { wait: def.dependsOn ? 1500 : 0 }));
       records.forEach(r => { if (r.row != null) r.person = persons[r.row]?.name; });
     } else {
       let scope = document;
@@ -428,7 +430,7 @@
         records.push(await fillOne(def, scope, getPath(src, def.source), undefined, { wait: def.dependsOn || def.showIf ? 1500 : 0, fileBase: def.key.replace(/\W/g, "_") }));
       }
     }
-    await verify(records); await retryFailed(records); await verify(records);
+    await verify(records); if (!forceManual) await retryFailed(records); await verify(records);
 
     const counted = records.filter(r => r.status !== "SKIPPED");
     const passed = counted.filter(r => r.status === "OK" || r.status === "RETRIED_OK").length;
@@ -436,9 +438,14 @@
       total: counted.length, passed, durationMs: Math.round(performance.now() - t0), notes, memberIndex: data.memberIndex,
       fields: records.map(r => ({ key: r.key, label: r.label, row: r.row, person: r.person, status: r.status, reason: r.reason, strategy: r.strategy, ttdMessage: r.ttdMessage })) };
     lastRecords = records;
-    records.filter(r => r.status === "FAILED" && r.el).forEach(r => highlight(r.el, true));
+    report.trustedGuard = flow.kind === "rows" && records.some(r => r.status === "FAILED" && ["NOT_ACCEPTED", "OPTION_NOT_FOUND"].includes(r.reason) && r.def?.type !== "file");
+    trustedGuard = report.trustedGuard;
+    if (trustedGuard) { try { sessionStorage.setItem("ph:qp:" + flowId, "1"); } catch {} }
+    renderPill();
+    records.filter(r => r.status === "FAILED" && r.el && !trustedGuard).forEach(r => highlight(r.el, true));
     if (mode === "FILL_CONTINUE") {
-      if (report.ok) Object.assign(report, await doContinue(flow));
+      if (trustedGuard) report.stoppedAt = "TRUSTED_GUARD";
+      else if (report.ok) Object.assign(report, await doContinue(flow));
       else report.stoppedAt = "FIELDS_FAILED";
     }
     return report;
@@ -543,7 +550,7 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const REASONS = {
     NOT_FOUND: "field not found on page", NOT_ACCEPTED: "TTD didn't keep the value", OPTION_NOT_FOUND: "option not in the list",
-    TTD_VALIDATION_ERROR: "TTD shows an error", NO_DATA: "nothing saved for this", DISABLED: "field is locked", POPUP_NOT_FOUND: "passport popup didn't open",
+    TTD_VALIDATION_ERROR: "TTD shows an error", NO_DATA: "nothing saved for this", MANUAL: "fill the popup yourself and click Save", DISABLED: "field is locked", POPUP_NOT_FOUND: "passport popup didn't open",
     POPUP_DID_NOT_CLOSE: "passport popup still open", CLOSE_BUTTON_NOT_FOUND: "popup close button not found", ERROR: "unexpected error"
   };
   const STOPS = {
@@ -553,6 +560,7 @@
     NO_CONTINUE: "Continue button not found. Please press it yourself.",
     FORBIDDEN_BUTTON: "The next button looks like Pay/Submit, so it wasn't clicked.",
     CONTINUE_DISABLED: "Continue is still disabled. Please check the form.",
+    TRUSTED_GUARD: "TTD accepts only details you enter yourself. Use Quick Paste below, then press Continue yourself.",
     FIELDS_FAILED: "Not continued because some fields need attention.",
     FILL_ONLY: "This booking is fill-only. Type the CAPTCHA and continue yourself.",
     DONE: "Continued. Please review the next screen."
@@ -600,12 +608,15 @@
     }
     if (rep.stoppedAt) html += `<div class="note ${rep.stoppedAt === "DONE" || rep.stoppedAt === "PAYMENT" ? "ok" : ""}">${esc(STOPS[rep.stoppedAt] || rep.stoppedAt)}</div>`;
     else if (rep.ok && rep.mode !== "PRACTICE") html += `<div class="note ok">Next: check the details, type the CAPTCHA and continue yourself.</div>`;
-    html += `<div class="act">${rep.mode === "PRACTICE" ? `<button type="button" id="clr">Clear filled fields</button>` : ""}<button type="button" id="again">Fill again</button></div>`;
+    if (rep.trustedGuard) html += `<div class="note bad">TTD accepts only details you enter yourself on this page. Use Quick Paste for the remaining fields.</div>`;
+    html += `<div class="act">${rep.trustedGuard ? `<button type="button" id="qps">Start Quick Paste</button>` : ""}${rep.mode === "PRACTICE" ? `<button type="button" id="clr">Clear filled fields</button>` : ""}<button type="button" id="again">${rep.trustedGuard ? "Try auto-fill again" : "Fill again"}</button></div>`;
     if (rep.ok) html += `<div class="bless">${LOTUS}<span>Govinda Govinda</span>${LOTUS}</div>`;
     html += `</div>`;
     panel.innerHTML = html;
     shadow.getElementById("px").onclick = () => showPanel(false);
-    shadow.getElementById("again").onclick = () => trigger("FILL");
+    shadow.getElementById("again").onclick = () => { if (rep.trustedGuard) { try { sessionStorage.removeItem("ph:qp:" + rep.flow); } catch {} } trigger("FILL"); };
+    const qps = shadow.getElementById("qps");
+    if (qps) qps.onclick = () => qpStart(rep);
     const clr = shadow.getElementById("clr");
     if (clr) clr.onclick = async () => { const n = await clearFilled(); notice(`Cleared ${n} field(s).`, "ok"); };
     panel.querySelectorAll("[data-fix]").forEach(b => b.onclick = () => fixField(+b.dataset.fix, rep));
@@ -634,11 +645,116 @@
     catch { btn.textContent = "Blocked"; }
     if (r.el) { r.el.scrollIntoView({ block: "center" }); r.el.focus?.(); }
   }
+
+  /* ================= Quick Paste (you press Ctrl+V / type / choose; the helper never sends synthetic input) ================= */
+  const CONTACT_ORDER = ["country", "state", "city", "pincode", "email", "gothram"];
+  const contactRank = d => { const i = CONTACT_ORDER.indexOf(String(d.key).replace("contact.", "")); return i < 0 ? 99 : i; };
+  const QP_REASONS = ["NOT_ACCEPTED", "OPTION_NOT_FOUND", "DISABLED", "TTD_VALIDATION_ERROR"];
+  let qp = null;
+  const qpWant = r => { let v = r.value; if (r.def?.valueMap?.[v] != null) v = r.def.valueMap[v]; return Array.isArray(v) ? v.join(", ") : String(v ?? ""); };
+  const qpChoice = r => r.def?.type === "select" || r.def?.type === "customSelect";
+  const qpTypeOnly = r => (cfg.behaviour?.pasteBlocked || ["age"]).includes(String(r.key).split(".").pop());
+  function qpEl(r) {
+    if (!r.el?.isConnected && r.def) { const again = resolve(r.def.strategies, r.scope); if (again) r.el = again.el; }
+    return r.el?.isConnected ? r.el : null;
+  }
+  function qpMatches(r) {
+    const el = qpEl(r); if (!el) return false;
+    const want = qpWant(r), cur = readValue(el, r.def.type);
+    if (qpChoice(r)) return !!norm(want) && norm(cur).includes(norm(want));
+    return same(cur, prep(want, r.def.compare), r.def.compare);
+  }
+  const qpStepLabel = r => (r.row != null ? `Row ${r.row + 1} · ` : "") + r.label;
+  function qpStop() {
+    if (!qp) return;
+    try { qp.anim?.cancel(); } catch {}
+    clearInterval(qp.timer); document.removeEventListener("focusin", qp.onFocus, true);
+    qp = null;
+  }
+  function qpStart(rep) {
+    qpStop();
+    const steps = lastRecords.filter(r => r.status === "FAILED" && QP_REASONS.includes(r.reason) && r.def && r.def.type !== "file" && !String(r.key).startsWith("passport"));
+    if (!steps.length) return notice("Nothing left to enter.", "ok");
+    qp = { steps, i: -1, rep, anim: null, timer: null, shown: null };
+    qp.onFocus = e => {
+      const j = qp.steps.findIndex(r => { const el = qpEl(r); return el && (el === e.target || el.contains(e.target)); });
+      if (j >= 0 && j !== qp.i && !qpMatches(qp.steps[j])) qpGo(j, false);
+    };
+    document.addEventListener("focusin", qp.onFocus, true);
+    qp.timer = setInterval(qpTick, 300);
+    qpGo(qpNext(0), true);
+  }
+  const qpNext = from => { let i = from; while (i < qp.steps.length && qpMatches(qp.steps[i])) i++; return i; };
+  function qpGo(i, focus) {
+    if (!qp) return;
+    try { qp.anim?.cancel(); } catch {}
+    qp.i = i;
+    if (i >= qp.steps.length) return qpFinish();
+    const r = qp.steps[i], el = qpEl(r);
+    if (el && focus) { el.scrollIntoView({ block: "center", behavior: "smooth" }); if (!el.disabled) el.focus?.({ preventScroll: true }); }
+    if (el?.animate) qp.anim = el.animate([{ boxShadow: "0 0 0 2px #c9962c" }, { boxShadow: "0 0 0 7px rgba(201,150,44,.35)" }], { duration: 900, iterations: Infinity, direction: "alternate" });
+    qpRender();
+  }
+  function qpTick() {
+    if (!qp || qp.i >= qp.steps.length) return;
+    if (qpMatches(qp.steps[qp.i])) {
+      qpGo(qpNext(qp.i + 1), true);
+      const r = qp && qp.steps[qp.i]; if (r && !qpChoice(r) && !qpTypeOnly(r)) navigator.clipboard?.writeText(qpWant(r)).catch(() => {});
+    } else if (qp.shown !== (qpEl(qp.steps[qp.i])?.disabled ? "locked" : "open")) qpRender();
+  }
+  function qpRender() {
+    if (!qp) return;
+    const r = qp.steps[qp.i], el = qpEl(r), want = qpWant(r);
+    const locked = !!el?.disabled;
+    qp.shown = locked ? "locked" : "open";
+    const passport = /passport/i.test(want) && String(r.key).endsWith("idType");
+    const what = locked ? "Waiting: choose the ID type first, then this field unlocks."
+      : qpChoice(r) ? `Choose: <b style="font-size:20px">${esc(want)}</b>`
+      : qpTypeOnly(r) ? `Type: <b style="font-size:26px">${esc(want)}</b>`
+      : `Press <b>Ctrl+V</b> in the highlighted field<br><b style="font-size:18px;word-break:break-all">${esc(want)}</b>`;
+    panel.innerHTML = header("Quick Paste", `Step ${qp.i + 1} of ${qp.steps.length}`) + `<div class="body">
+      <div class="note">TTD accepts only details you enter yourself on this page.</div>
+      <div class="sum">${esc(qpStepLabel(r))}</div><div>${what}</div>
+      ${passport ? `<div class="note">A popup opens for passport details. Fill it and click Save yourself.</div>` : ""}
+      <div class="act">${qpChoice(r) || qpTypeOnly(r) || locked ? "" : `<button type="button" id="qcopy" style="font-size:15px;padding:8px 18px">Copy</button>`}
+      <button type="button" id="qback">Back</button><button type="button" id="qskip">Skip</button><button type="button" id="qstop">Finish</button></div></div>`;
+    const refocus = () => { const e = qpEl(r); if (e && !e.disabled) e.focus?.({ preventScroll: true }); };
+    const copy = shadow.getElementById("qcopy");
+    if (copy) copy.onclick = async () => { try { await navigator.clipboard.writeText(want); copy.textContent = "Copied ✔"; } catch { copy.textContent = "Blocked: type it"; } refocus(); };
+    shadow.getElementById("qback").onclick = () => qpGo(Math.max(0, qp.i - 1), true);
+    shadow.getElementById("qskip").onclick = () => qpGo(qp.i + 1, true);
+    shadow.getElementById("qstop").onclick = () => qpFinish();
+    shadow.getElementById("px").onclick = () => qpFinish();
+    showPanel(true);
+    if (copy) navigator.clipboard?.writeText(want).catch(() => {});
+    refocus();
+  }
+  async function qpFinish() {
+    if (!qp) return;
+    const { steps, rep } = qp;
+    steps.forEach(r => { if (qpMatches(r)) { r.status = "OK"; r.reason = undefined; } });
+    const last = qpEl(steps[steps.length - 1]); qpStop();
+    try { last?.blur(); } catch {}
+    await sleep(250);
+    await verify(lastRecords);
+    const counted = lastRecords.filter(r => r.status !== "SKIPPED");
+    rep.fields = lastRecords.map(r => ({ key: r.key, label: r.label, row: r.row, person: r.person, status: r.status, reason: r.reason, strategy: r.strategy, ttdMessage: r.ttdMessage }));
+    rep.total = counted.length; rep.passed = counted.filter(r => r.status === "OK" || r.status === "RETRIED_OK").length;
+    // the passport popup is entered by hand and can't be read back, so it is never reported as filled
+    for (const r of lastRecords) if (String(r.key).endsWith("idType") && r.status === "OK" && /passport/i.test(qpWant(r)) && lastRecords.some(x => x.row === r.row && String(x.key).startsWith("passport") && x.status === "OK") === false) {
+      rep.fields.push({ key: "passport.popup", label: "Passport details", row: r.row, person: r.person, status: "FAILED", reason: "MANUAL" }); rep.total++;
+    }
+    rep.ok = rep.passed === rep.total && rep.total > 0;
+    rep.trustedGuard = !rep.ok; rep.stoppedAt = "FILL_ONLY"; rep.mode = "FILL";
+    if (rep.ok) { trustedGuard = false; renderPill(); }
+    renderReport(rep);
+  }
   function highlight(el, on) { try { el.style.outline = on ? "3px solid #b3261e" : ""; el.style.outlineOffset = on ? "2px" : ""; } catch {} }
 
   function trigger(mode) {
     if (!alive()) return teardown();
     if (busy) return;
+    if (mode === "FILL_CONTINUE" && trustedGuard) return notice("Fill & Continue is off: TTD accepts only details you enter yourself. Use Quick Paste, then press Continue yourself.", "bad");
     $("fillLbl").textContent = "Filling…";
     chrome.runtime.sendMessage({ t: "REQUEST_FILL", mode }, res => {
       void chrome.runtime.lastError;
@@ -665,6 +781,8 @@
     $("fillLbl").textContent = "Fill" + (d.slots ? ` ${d.slots}` : "");
     $("fill").title = `Fill ${f.title} (Alt+A)`;
     $("fillc").classList.toggle("hidden", !f.continue?.allowed);
+    $("fillc").disabled = trustedGuard;
+    $("fillc").title = trustedGuard ? "Disabled: TTD needs your own input on this page" : "Fill & Continue (Alt+S) – stops before payment";
     $("sepc").classList.toggle("hidden", !f.continue?.allowed);
   }
 
@@ -689,12 +807,14 @@
       case "DETECT": lastDetect = detect(); renderPill(); sendResponse(lastDetect); return;
       case "NOTICE": notice(msg.text, msg.level); sendResponse(true); return;
       case "CLEAR": clearFilled().then(n => { notice(`Cleared ${n} field(s).`, "ok"); sendResponse({ cleared: n }); }); return true;
+      case "QP_START": if (lastReport?.trustedGuard) qpStart(lastReport); sendResponse({ started: !!qp }); return;
+      case "QP_STATE": sendResponse({ active: !!qp, ok: !!lastReport?.ok, trustedGuard: !!lastReport?.trustedGuard, step: qp?.i }); return;
       case "FILL":
         if (busy) { sendResponse({ ok: false, error: "E_BUSY", fields: [] }); return; }
         busy = true;
         lastRecords.forEach(r => r.el && highlight(r.el, false));
         runFill(msg.flowId, msg.mode, msg.data)
-          .then(rep => { renderReport(rep); sendResponse(rep); })
+          .then(rep => { lastReport = rep; renderReport(rep); sendResponse(rep); })
           .catch(e => { console.error("[PilgrimHelper]", e); notice("Unexpected error. Please fill manually and use Report issue in settings.", "bad"); sendResponse({ flow: msg.flowId, ok: false, error: "E_INTERNAL", fields: [] }); })
           .finally(() => { busy = false; });
         return true;
