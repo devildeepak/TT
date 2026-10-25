@@ -169,6 +169,8 @@
     if (compare === "alnum") return a.replace(/[^a-z0-9]/gi, "").toLowerCase() === b.replace(/[^a-z0-9]/gi, "").toLowerCase();
     return a.trim().toLowerCase() === b.trim().toLowerCase();
   }
+  // whole-word match so "Male" never matches "Female"
+  const hasWord = (hay, needle) => { const n = norm(needle); return !!n && new RegExp(`(^|[^\\p{L}\\p{N}])${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}($|[^\\p{L}\\p{N}])`, "u").test(norm(hay)); };
   const dmyToIso = v => { const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v); return m ? `${m[3]}-${m[2]}-${m[1]}` : v; };
 
   async function setText(el, value, compare) {
@@ -229,7 +231,7 @@
     }
     clickLike(opt); await sleep(60);
     const shown = norm(el.innerText || el.value || el.querySelector("input")?.value || el.getAttribute("aria-label"));
-    return shown.includes(w) ? { ok: true, level: 1 } : { ok: false, reason: "NOT_ACCEPTED" };
+    return hasWord(shown, w) ? { ok: true, level: 1 } : { ok: false, reason: "NOT_ACCEPTED" };
   }
   const labelOfChoice = inp => norm(inp.labels?.[0]?.innerText || inp.closest("label")?.innerText || inp.nextSibling?.textContent || inp.value);
   async function setRadio(el, value) {
@@ -383,7 +385,7 @@
       if (r.def.type === "checkbox") ok = cur === (expect === true || expect === "true" || expect === "Yes");
       else if (r.def.type === "multi") ok = true; // verified in setter
       else if (r.el.type === "date") ok = same(cur, dmyToIso(String(expect)));
-      else ok = same(cur, prep(expect, r.def.compare), r.def.compare) || (r.def.type === "select" && norm(cur).includes(norm(expect)));
+      else ok = same(cur, prep(expect, r.def.compare), r.def.compare) || (r.def.type === "select" && hasWord(cur, expect));
       if (!ok) { r.status = "FAILED"; r.reason = "NOT_ACCEPTED"; continue; }
       const err = hasErrorNear(r.el);
       if (err) { r.status = "FAILED"; r.reason = "TTD_VALIDATION_ERROR"; r.ttdMessage = typeof err === "string" ? err : ""; }
@@ -663,7 +665,7 @@
   function qpMatches(r) {
     const el = qpEl(r); if (!el) return false;
     const want = qpWant(r), cur = readValue(el, r.def.type);
-    if (qpChoice(r)) return !!norm(want) && norm(cur).includes(norm(want));
+    if (qpChoice(r)) return hasWord(cur, want);
     return same(cur, prep(want, r.def.compare), r.def.compare);
   }
   const qpStepLabel = r => (r.row != null ? `Row ${r.row + 1} · ` : "") + r.label;
@@ -687,6 +689,16 @@
     qpGo(qpNext(0), true);
   }
   const qpNext = from => { let i = from; while (i < qp.steps.length && qpMatches(qp.steps[i])) i++; return i; };
+  // keep the panel off the active field and its dropdown list
+  function qpAvoid(r) {
+    setTimeout(() => {
+      const el = qp && qpEl(r); if (!el) return;
+      const f = el.getBoundingClientRect(), p = panel.getBoundingClientRect(); if (!p.width) return;
+      const hit = (L, R) => f.left < R && f.right > L && f.top < p.bottom && f.bottom + 240 > p.top;
+      if (!hit(p.left, p.right)) return;
+      host.style.right = !hit(16, 16 + p.width) ? Math.max(16, innerWidth - 16 - p.width) + "px" : "16px";
+    }, 500);
+  }
   function qpGo(i, focus) {
     if (!qp) return;
     try { qp.anim?.cancel(); } catch {}
@@ -696,6 +708,7 @@
     if (el && focus) { el.scrollIntoView({ block: "center", behavior: "smooth" }); if (!el.disabled) el.focus?.({ preventScroll: true }); }
     if (el?.animate) qp.anim = el.animate([{ boxShadow: "0 0 0 2px #c9962c" }, { boxShadow: "0 0 0 7px rgba(201,150,44,.35)" }], { duration: 900, iterations: Infinity, direction: "alternate" });
     qpRender();
+    if (focus) qpAvoid(r);
   }
   function qpTick() {
     if (!qp || qp.i >= qp.steps.length) return;

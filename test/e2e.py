@@ -281,6 +281,18 @@ async def main():
         check("quick paste: contact entered in order Country then State then City", order.index("c.country") < order.index("c.state") < order.index("c.city") if all(k in order for k in ["c.country", "c.state", "c.city"]) else False, order)
         check("quick paste: Continue never pressed", not await page.evaluate("window.__continued"))
 
+        # 15d. quick paste: choosing Female must not satisfy a "Male" step (whole-word match)
+        await go("?strict=1#/special-entry"); await page.reload(); await page.wait_for_timeout(900); await fill("FILL"); await page.bring_to_front(); await tabmsg({"t": "QP_START"})
+        g = '[data-key="p0.gender"]'
+        for k, v in (("p0.name", people[0]["name"]), ("p0.age", str(people[0]["age"]))):
+            await page.click(f'[data-key="{k}"]'); await page.keyboard.type(v); await page.wait_for_timeout(700)
+        before = (await tabmsg({"t": "QP_STATE"}))["step"]
+        await page.focus(g); await page.keyboard.type("Fe"); await page.wait_for_timeout(900)
+        s_f = (await tabmsg({"t": "QP_STATE"}))["step"]
+        await page.focus(g); await page.keyboard.press("ArrowUp"); await page.wait_for_timeout(900)
+        s_m = (await tabmsg({"t": "QP_STATE"}))["step"]
+        check("quick paste: Female does not satisfy Male step, Male does", s_f == before and s_m > before, (before, s_f, s_m, await page.eval_on_selector(g, 'e=>[e.value,e.selectedOptions[0]?.text]'), (await st()).get('p0.gender')))
+
         # 15b. selectors cover field names read from TTD's public JS
         cfg = open(os.path.join(ROOT, "config", "selectors.json"), encoding="utf8").read() if "ROOT" in globals() else open("config/selectors.json", encoding="utf8").read()
         check("selectors include live TTD names", all(k in cfg for k in ["fname","photoIdType","idProofNumber","emailId","visaNumber","visaValidityDate","Enter ID Card Number","/ssdpat/pilgrim-details","Tiruchanoor"]))
