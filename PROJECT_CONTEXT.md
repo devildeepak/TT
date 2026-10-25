@@ -51,3 +51,13 @@ differently_abled (2, certificate), angapradakshinam (1), srivari_seva (schema),
 
 ## How to ask for a change
 Upload the latest zip (without dist/) and say: "Read PROJECT_CONTEXT.md. Problem: …. Give full updated files, run e2e, update changelog."
+
+## Real-site facts (gathered 25 Oct 2026 from TTD public JS, live /pilgrim-details, public open-source adapter code and tests)
+- KNOWN: SED and SPAT /pilgrim-details rows use `fname`, `age`, `gender`, `photoIdType`, `idProofNumber`; `id` of each input is the row index. General Details inputs there are `emailId`, `city`, `state`, `country`, `pincode`.
+- KNOWN: Arjitha / Homam / Virtual Seva use `pilgrimEmail`, `pilgrimCity`, `pilgrimState`, `pilgrimCountry`, `pilgrimPincode`, `gothram`.
+- KNOWN: PLD (senior citizen) rows use `name`, `age`, `idNumber`, plus "Upload Document" (hidden file input, .jpeg/.png/.pdf, rejects > 1000 KB).
+- KNOWN: Gender options Female/Male/Transgender; ID proof options Aadhaar Card/Passport; ID number max 12 chars and disabled until ID type chosen; name pattern letters+space, max 80.
+- KNOWN: Passport popup inputs `country`, `visaNumber`, `visaType`, `visaValidityDate`.
+- KNOWN: TTD's shared text field ignores untrusted events (isTrusted); State and Country dropdowns open and accept an option only on a trusted click. Quick Paste / user-driven entry is the supported path.
+- KNOWN: pincode must be 6 digits or "Please enter valid pincode" blocks Continue.
+- UNVERIFIED: person-row DOM on a live open slot; Srivani donation site; Angapradakshinam photo upload.
