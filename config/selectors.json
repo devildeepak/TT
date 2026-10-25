@@ -1,5 +1,5 @@
 {
-  "version": "2026.10.25-2",
+  "version": "2026.10.25-3",
   "minExtVersion": "1.0.0",
   "_note": "Labels, URL fragments and button texts are PLACEHOLDERS. Capture the real values from live TTD pages (design doc Appendix D) and update this file. The engine tries each strategy in order.",
   "forbiddenButtonText": ["pay", "pay now", "make payment", "proceed to payment", "confirm", "confirm & submit", "submit", "book now", "i agree"],
@@ -49,8 +49,8 @@
       "continue": { "allowed": true, "maxClicks": 1 }
     },
     "spat": {
-      "title": "SPAT Darshan",
-      "detect": { "url": ["/spat/pilgrim-details"], "text": ["SPAT Darshan", "Pilgrim Details"] },
+      "title": "Special Entry Darshan (Ammavari Temple, Tiruchanoor)",
+      "detect": { "url": ["/spat/pilgrim-details", "/ssdpat/pilgrim-details"], "text": ["SPAT Darshan", "Padmavathi Ammavari", "Tiruchanoor", "Pilgrim Details"] },
       "kind": "rows", "maxPersons": 6, "rowFields": ["name", "age", "gender", "idType", "idNumber"],
       "passport": true, "contact": ["email", "city", "country", "state", "pincode"],
       "continue": { "allowed": true, "maxClicks": 1 }

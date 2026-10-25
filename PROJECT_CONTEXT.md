@@ -40,6 +40,7 @@ differently_abled (2, certificate), angapradakshinam (1), srivari_seva (schema),
 - 1.1.0 (24 Oct 2026) – devotional redesign (temple header, toranam, Seven Hills welcome, gold avatars, day/night themes,
   in-page panel restyle), 10 fake test profiles + "Load sample profiles" button in DEV builds, 38 tests.
 - 1.1.1 (24 Oct 2026) – added real-world `pilgrim-details` route alias and broader field selectors for TTD forms; e2e launch now falls back to the installed Edge browser when Chromium is missing.
+- 1.2.2 (25 Oct 2026) ? Special Entry Darshan (Ammavari Temple, Tiruchanoor) confirmed from TTD JS: it is the `/spat/pilgrim-details` route (SPAT = Sri Padmavathi Ammavari Temple, `sedTempleFlow`), same shared form as SED; `/ssdpat/pilgrim-details` (slotted sarva darshan at Ammavari) added to the spat flow detection.
 - 1.2.1 (25 Oct 2026) ? field names confirmed from TTD public JS and live /pilgrim-details (contact `emailId`, `city`, `state`, `country`, `pincode`; row `fname`, `age`, `gender`, `photoIdType`, `idProofNumber`; passport `visaNumber`, `visaType`, `visaValidityDate`); added placeholder strategies, `/pld` and `/agp` routes, li/div fallback for TTD custom dropdowns. Live: scripted input is rejected (isTrusted), typed input accepted, so Quick Paste is the real path.
 - 1.2.0 (24 Oct 2026) – broadened real-site host support to `tirupatibalaji.ap.gov.in` and optional `ttdsevaonline.com`, updated selector versioning and `attrContains`/`notUrl` handling, aligned the field selectors with the public TTD autofill adapters (`fname`, `photoIdType`, `idProofNumber`, `pincode`, etc.), added state normalization and real-site route detection improvements.
 
@@ -54,6 +55,7 @@ Upload the latest zip (without dist/) and say: "Read PROJECT_CONTEXT.md. Problem
 
 ## Real-site facts (gathered 25 Oct 2026 from TTD public JS, live /pilgrim-details, public open-source adapter code and tests)
 - KNOWN: SED and SPAT /pilgrim-details rows use `fname`, `age`, `gender`, `photoIdType`, `idProofNumber`; `id` of each input is the row index. General Details inputs there are `emailId`, `city`, `state`, `country`, `pincode`.
+- KNOWN: Special Entry Darshan (Ammavari Temple, Tiruchanoor) = `/spat/pilgrim-details` (SPAT = Sri Padmavathi Ammavari Temple); same row + General Details fields as SED (`fname, age, gender, photoIdType, idProofNumber`; `emailId, city, state, country, pincode`). Slotted Sarva Darshan at Ammavari = `/ssdpat/pilgrim-details`, same row fields.
 - KNOWN: Arjitha / Homam / Virtual Seva use `pilgrimEmail`, `pilgrimCity`, `pilgrimState`, `pilgrimCountry`, `pilgrimPincode`, `gothram`.
 - KNOWN: PLD (senior citizen) rows use `name`, `age`, `idNumber`, plus "Upload Document" (hidden file input, .jpeg/.png/.pdf, rejects > 1000 KB).
 - KNOWN: Gender options Female/Male/Transgender; ID proof options Aadhaar Card/Passport; ID number max 12 chars and disabled until ID type chosen; name pattern letters+space, max 80.

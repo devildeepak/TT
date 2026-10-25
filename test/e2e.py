@@ -245,7 +245,7 @@ async def main():
 
         # 15b. selectors cover field names read from TTD's public JS
         cfg = open(os.path.join(ROOT, "config", "selectors.json"), encoding="utf8").read() if "ROOT" in globals() else open("config/selectors.json", encoding="utf8").read()
-        check("selectors include live TTD names", all(k in cfg for k in ["fname","photoIdType","idProofNumber","emailId","visaNumber","visaValidityDate","Enter ID Card Number"]))
+        check("selectors include live TTD names", all(k in cfg for k in ["fname","photoIdType","idProofNumber","emailId","visaNumber","visaValidityDate","Enter ID Card Number","/ssdpat/pilgrim-details","Tiruchanoor"]))
         # 16. UI renders without errors (popup + every settings page, light & dark)
         errs = []
         pop = await ctx.new_page(); pop.on("pageerror", lambda e: errs.append(str(e)))
